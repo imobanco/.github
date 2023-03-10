@@ -485,6 +485,9 @@
   #    enableZshIntegration = true;
   #  };
 
+  # Credits:
+  # https://gist.github.com/s-a-c/0e44dc7766922308924812d4c019b109
+  # https://gist.github.com/search?q=So+either+put+%22Important+Documents%22+before+%22Documents%22+or+use+the+substituted+version%3A%3B&ref=searchresults
   programs.starship = {
       enable = true;
       enableZshIntegration = true;
