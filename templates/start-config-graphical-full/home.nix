@@ -251,13 +251,6 @@
       )
 
       (
-        writeScriptBin "nr" ''
-         #! ${pkgs.runtimeShell} -e
-         nix repl --expr 'import <nixpkgs> {}'
-        ''
-      )
-
-      (
         writeScriptBin "nfm" ''
           #! ${pkgs.runtimeShell} -e
           nix flake metadata $1 --json | jq -r '.url'
@@ -384,7 +377,7 @@
       nb = "nix build";
       npi = "nix profile install nixpkgs#";
       ns = "nix shell";
-      nr = "nix repl --expr 'import <nixpkgs> {}'";
+      # nr = "nix repl --expr 'import <nixpkgs> {}'";
     };
 
     # > closed and reopened the terminal. Then it worked.
