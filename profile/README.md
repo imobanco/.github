@@ -2,6 +2,72 @@
 
 
 
+## Template
+
+```bash
+command -v curl || (command -v apt && sudo apt-get update && sudo apt-get install -y curl)
+command -v curl || (command -v apk && sudo apk add --no-cache -y curl)
+
+
+# Precisa das variáveis de ambiente USER e HOME
+DIRETORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
+
+nix \
+shell \
+github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#coreutils} \
+--command \
+bash <<-EOF
+  mkdir -pv $DIRETORY_TO_CLONE
+EOF
+
+cd $DIRETORY_TO_CLONE
+
+nix \
+flake \
+init \
+--template \
+github:PedroRegisPOAR/.github#start-config-graphical-full
+
+
+nix \
+shell \
+github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteractive,coreutils,gnused,home-manager} \
+--command \
+bash <<-EOF
+
+sed -i 's/username = ".*";/username = "'$USER'";/g' flake.nix \
+&& git init \
+&& git status \
+&& git add . \
+&& nix flake update --override-input nixpkgs github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb \
+&& git status \
+&& git add .
+
+
+export NIXPKGS_ALLOW_UNFREE=1 \
+&& home-manager switch -b backuphm --impure --flake ~/.config/nixpkgs \
+&& home-manager generations
+
+
+#
+TARGET_SHELL='zsh' \
+&& FULL_TARGET_SHELL=/home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
+&& echo \
+&& ls -al "\$FULL_TARGET_SHELL" \
+&& echo \
+&& echo "\$FULL_TARGET_SHELL" | sudo tee -a /etc/shells \
+&& echo \
+&& sudo \
+      -k \
+      usermod \
+      -s \
+      /home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
+      "$USER"
+EOF
+```
+
+
+
 ## Slim, home-manager + nix + zsh + fonts
 
 
