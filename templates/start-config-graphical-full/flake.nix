@@ -20,7 +20,7 @@
             {
               home = {
                 inherit username;
-                homeDirectory = "/home/\${username}"; # TODO: esse caminho muda no Mac!
+                homeDirectory = "/home/${username}"; # TODO: esse caminho muda no Mac!
                 stateVersion = "22.11";
               };
               programs.home-manager.enable = true;
