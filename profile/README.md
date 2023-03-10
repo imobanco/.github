@@ -34,7 +34,7 @@ nix \
 flake \
 init \
 --template \
-github:PedroRegisPOAR/.github#start-config-graphical-full
+github:PedroRegisPOAR/.github/feature/dx-with-nix-and-home-manager#start-config-graphical-full
 
 
 nix \
