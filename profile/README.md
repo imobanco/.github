@@ -4,7 +4,7 @@
 
 ## Template
 
-
+1)
 ```bash
 command -v curl || (command -v apt && sudo apt-get update && sudo apt-get install -y curl)
 command -v curl || (command -v apk && sudo apk add --no-cache -y curl)
@@ -68,7 +68,17 @@ bash <<-EOF
 EOF
 ```
 
+2)
+```bash
+sudo reboot
+```
 
+3) Adicionando uma nova cahve ssh a sua conta do github:
+https://github.com/settings/ssh/new
+
+
+4) Ir para o repositório privado do Imobanco?
+https://github.com/imobanco/.config-nixpkgs
 
 ## Slim, home-manager + nix + zsh + fonts
 
