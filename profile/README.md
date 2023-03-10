@@ -9,6 +9,13 @@ command -v curl || (command -v apt && sudo apt-get update && sudo apt-get instal
 command -v curl || (command -v apk && sudo apk add --no-cache -y curl)
 
 
+NIX_RELEASE_VERSION=2.10.2 \
+&& curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s -- --no-daemon \
+&& . "$HOME"/.nix-profile/etc/profile.d/nix.sh
+
+export NIX_CONFIG='extra-experimental-features = nix-command flakes'
+
+
 # Precisa das variáveis de ambiente USER e HOME
 DIRETORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 
