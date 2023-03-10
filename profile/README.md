@@ -21,9 +21,10 @@ DIRETORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 
 nix \
 shell \
-github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#coreutils} \
+github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#coreutils \
 --command \
 bash <<-EOF
+  echo $DIRETORY_TO_CLONE
   mkdir -pv $DIRETORY_TO_CLONE
 EOF
 
@@ -58,17 +59,17 @@ export NIXPKGS_ALLOW_UNFREE=1 \
 
 #
 TARGET_SHELL='zsh' \
-&& FULL_TARGET_SHELL=/home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
+&& FULL_TARGET_SHELL=/home/"$USER"/.nix-profile/bin/"$TARGET_SHELL" \
 && echo \
-&& ls -al "\$FULL_TARGET_SHELL" \
+&& ls -al "$FULL_TARGET_SHELL" \
 && echo \
-&& echo "\$FULL_TARGET_SHELL" | sudo tee -a /etc/shells \
+&& echo "$FULL_TARGET_SHELL" | sudo tee -a /etc/shells \
 && echo \
 && sudo \
       -k \
       usermod \
       -s \
-      /home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
+      /home/"$USER"/.nix-profile/bin/"$TARGET_SHELL" \
       "$USER"
 EOF
 ```
