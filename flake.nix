@@ -15,7 +15,8 @@
         name = "imobanco-entrypoint";
 
         pkgsAllowUnfree = import nixpkgs {
-          inherit system;
+          # inherit system;
+          system = "x86_64-linux";
           config = { allowUnfree = true; };
         };
 
