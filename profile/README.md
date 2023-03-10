@@ -132,7 +132,9 @@ EOF
 sudo reboot
 ```
 
-3) Adicionando uma nova chave ssh a sua conta do github:
+3) Adicionando uma nova chave ssh a sua conta do github
+
+Use o script `generate-new-ed25519-key-pair` e acesse o link:
 https://github.com/settings/ssh/new
 
 
