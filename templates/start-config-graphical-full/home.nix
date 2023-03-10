@@ -242,10 +242,10 @@
          ssh-keygen \
          -t ed25519 \
          -C "$(git config user.email)" \
-         -f "${HOME}"/.ssh/id_ed25519 \
-         -N '' \
+         -f "$HOME"/.ssh/id_ed25519 \
+         -N "" \
          && echo \
-         && cat "${HOME}"/.ssh/id_ed25519.pub \
+         && cat "$HOME"/.ssh/id_ed25519.pub \
          && echo
         ''
       )

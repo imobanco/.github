@@ -47,7 +47,7 @@ bash <<-EOF
     
     
     export NIXPKGS_ALLOW_UNFREE=1 \
-    && home-manager switch -b backuphm --impure --flake ~/.config/nixpkgs \
+    && home-manager switch -b backuphm --impure --flake /home/"$USER"/.config/nixpkgs \
     && home-manager generations
     
     
