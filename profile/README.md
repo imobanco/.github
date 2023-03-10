@@ -73,7 +73,7 @@ EOF
 sudo reboot
 ```
 
-3) Adicionando uma nova cahve ssh a sua conta do github:
+3) Adicionando uma nova chave ssh a sua conta do github:
 https://github.com/settings/ssh/new
 
 
