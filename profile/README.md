@@ -53,17 +53,17 @@ bash <<-EOF
     
     #
     TARGET_SHELL='zsh' \
-    && FULL_TARGET_SHELL=/home/"$USER"/.nix-profile/bin/"$TARGET_SHELL" \
+    && FULL_TARGET_SHELL=/home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
     && echo \
-    && ls -al "$FULL_TARGET_SHELL" \
+    && ls -al "\$FULL_TARGET_SHELL" \
     && echo \
-    && echo "$FULL_TARGET_SHELL" | sudo tee -a /etc/shells \
+    && echo "\$FULL_TARGET_SHELL" | sudo tee -a /etc/shells \
     && echo \
     && sudo \
           -k \
           usermod \
           -s \
-          /home/"$USER"/.nix-profile/bin/"$TARGET_SHELL" \
+          /home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
           "$USER"
 EOF
 ```
