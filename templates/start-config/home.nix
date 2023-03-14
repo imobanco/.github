@@ -98,6 +98,7 @@
     killall
     nmap
     netcat
+    nettools
     tmate
     strace
     # ptrace
@@ -241,6 +242,33 @@
          # https://askubuntu.com/questions/95910/command-for-determining-my-public-ip#comment1985064_712144
 
          curl https://checkip.amazonaws.com
+       ''
+      )
+      (
+        writeScriptBin "mynatip" ''
+         #! ${pkgs.runtimeShell} -e
+            # https://unix.stackexchange.com/a/569306
+            NETWORK_INTERFACE_NAME=$(route | awk '
+                    BEGIN           { min = -1 }
+                    $1 == "default" {
+                                        if (min < 0  ||  $5 < min) {
+                                            min   = $5
+                                            iface = $8
+                                        }
+                                    }
+                    END             {
+                                        if (iface == "") {
+                                            print "No \"default\" route found!" > "/dev/stderr"
+                                            exit 1
+                                        } else {
+                                            print iface
+                                            exit 0
+                                        }
+                                    }
+                    '
+            )
+
+            ip addr show dev $NETWORK_INTERFACE_NAME | grep "inet " | awk '{ print $2 }' | cut -d'/' -f1
        ''
       )
 
