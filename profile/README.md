@@ -146,3 +146,7 @@ https://github.com/imobanco/.config-nixpkgs
 ```bash
 # rm -frv /home/"$USER"/.config/nixpkgs/.git
 ```
+
+
+https://unix.stackexchange.com/a/395900
+
