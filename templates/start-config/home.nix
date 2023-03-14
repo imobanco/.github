@@ -244,6 +244,7 @@
          curl https://checkip.amazonaws.com
        ''
       )
+
       (
         writeScriptBin "mynatip" ''
          #! ${pkgs.runtimeShell} -e
