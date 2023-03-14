@@ -141,3 +141,8 @@ https://github.com/settings/ssh/new
 4) Ir para o repositório privado do Imobanco?
 https://github.com/imobanco/.config-nixpkgs
 
+5) WIP
+
+```bash
+# rm -frv /home/"$USER"/.config/nixpkgs/.git
+```

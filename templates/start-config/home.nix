@@ -236,9 +236,17 @@
       )
 
       (
+        writeScriptBin "myexternalip" ''
+         #! ${pkgs.runtimeShell} -e
+         # https://askubuntu.com/questions/95910/command-for-determining-my-public-ip#comment1985064_712144
+
+         curl https://checkip.amazonaws.com
+       ''
+      )
+
+      (
         writeScriptBin "generate-new-ed25519-key-pair" ''
          #! ${pkgs.runtimeShell} -e
-
          ssh-keygen \
          -t ed25519 \
          -C "$(git config user.email)" \
