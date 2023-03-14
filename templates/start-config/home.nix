@@ -248,6 +248,7 @@
         writeScriptBin "mynatip" ''
          #! ${pkgs.runtimeShell} -e
             # https://unix.stackexchange.com/a/569306
+            # https://serverfault.com/a/256506
             NETWORK_INTERFACE_NAME=$(route | awk '
                     BEGIN           { min = -1 }
                     $1 == "default" {
