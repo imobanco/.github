@@ -140,7 +140,7 @@
     # lineicons
     # montserrat
     # mplus-outline-fonts
-    nerdfonts # Really big, but only this font fixed some issues with starship
+    # nerdfonts # Really big, but only this font fixed some issues with starship
     # noto-fonts
     # noto-fonts-emoji
     # noto-fonts-extra
@@ -162,21 +162,65 @@
     # xkcd-font
 
     # (nerdfonts.override { fonts = [ "FiraCode"]; })
-    #      (
-    #        nerdfonts.override {
-    #          fonts = [
-    #            "AnonymousPro"
-    #            "DroidSansMono"
-    #            "FiraCode"
-    #            "JetBrainsMono"
-    #            "Noto"
-    #            "Terminus"
-    #            "Hack"
-    #            "Ubuntu"
-    #            "UbuntuMono"
-    #          ];
-    #        }
-    #      )
+  (
+    nerdfonts.override {
+      fonts = [
+          "3270"
+          "Agave"
+          "AnonymousPro"
+          "Arimo"
+          "AurulentSansMono"
+          "BigBlueTerminal"
+          "BitstreamVeraSansMono"
+          "CascadiaCode"
+          "CodeNewRoman"
+          "Cousine"
+          "DaddyTimeMono"
+          "DejaVuSansMono"
+          "DroidSansMono"
+          "FantasqueSansMono"
+          "FiraCode"
+          "FiraMono"
+          "FontPatcher"
+          "Go-Mono"
+          "Gohu"
+          "Hack"
+          "Hasklig"
+          "HeavyData"
+          "Hermit"
+          "iA-Writer"
+          "IBMPlexMono"
+          "Inconsolata"
+          "InconsolataGo"
+          "InconsolataLGC"
+          # "Iosevka"
+          "JetBrainsMono"
+          "Lekton"
+          "LiberationMono"
+          "Lilex"
+          "Meslo"
+          "Monofur"
+          "Monoid"
+          "Mononoki"
+          "MPlus"
+          "NerdFontsSymbolsOnly"
+          "Noto"
+          "OpenDyslexic"
+          "Overpass"
+          "ProFont"
+          "ProggyClean"
+          "RobotoMono"
+          "ShareTechMono"
+          "SourceCodePro"
+          "SpaceMono"
+          "Terminus"
+          "Tinos"
+          "Ubuntu"
+          "UbuntuMono"
+          "VictorMono"
+      ];
+    }
+  )
 
     # zsh-nix-shell
     # zsh-powerlevel10k
@@ -291,7 +335,7 @@
       )
 
       (
-        writeScriptBin "try-install-openss-server" ''
+        writeScriptBin "try-install-openssh-server" ''
           #! ${pkgs.runtimeShell} -e
             command -v sshd || (command -v apt && sudo apt-get update && sudo apt-get install -y openssh-server)
             command -v sshd || (command -v apk && sudo apk add --no-cache -y openssh-server)

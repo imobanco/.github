@@ -182,10 +182,26 @@
       )
 
       (
-        writeScriptBin "try-install-openss-server" ''
+        writeScriptBin "try-install-openssh-server" ''
           #! ${pkgs.runtimeShell} -e
             command -v sshd || (command -v apt && sudo apt-get update && sudo apt-get install -y openssh-server)
             command -v sshd || (command -v apk && sudo apk add --no-cache -y openssh-server)
+        ''
+      )
+
+      (
+        writeScriptBin "try-ubuntu-screensaver-lock-disable" ''
+          #! ${pkgs.runtimeShell} -e
+          # https://linuxhint.com/disable-screen-lock-ubuntu/
+
+          gsettings set org.gnome.desktop.screensaver lock-enabled false
+        ''
+      )
+
+      (
+        writeScriptBin "try-ubuntu-screensaver-lock-enable" ''
+          #! ${pkgs.runtimeShell} -e
+          gsettings set org.gnome.desktop.screensaver lock-enabled true
         ''
       )
 
