@@ -95,6 +95,7 @@
     wget
     lsof
     tree
+    ripgrep
     killall
     nmap
     netcat
@@ -286,6 +287,14 @@
          && echo \
          && cat "$HOME"/.ssh/id_ed25519.pub \
          && echo
+        ''
+      )
+
+      (
+        writeScriptBin "try-install-openss-server" ''
+          #! ${pkgs.runtimeShell} -e
+            command -v sshd || (command -v apt && sudo apt-get update && sudo apt-get install -y openssh-server)
+            command -v sshd || (command -v apk && sudo apk add --no-cache -y openssh-server)
         ''
       )
 

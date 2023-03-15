@@ -95,9 +95,11 @@
     wget
     lsof
     tree
+    ripgrep
     killall
     nmap
     netcat
+    nettools
     tmate
     strace
     # ptrace
