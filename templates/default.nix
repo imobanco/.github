@@ -11,6 +11,6 @@
 
   startSlimConfig = {
     description = "Configuração base inicial COM insterface gráfica";
-    path = ./start-config;
+    path = ./start-slim-config;
   };
 }
