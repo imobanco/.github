@@ -33,6 +33,7 @@ github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteracti
 --command \
 bash <<-EOF
     echo $DIRETORY_TO_CLONE
+    rm -frv $DIRETORY_TO_CLONE
     mkdir -pv $DIRETORY_TO_CLONE
 
     cd $DIRETORY_TO_CLONE
@@ -87,6 +88,7 @@ github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteracti
 --command \
 bash <<-EOF
     echo $DIRETORY_TO_CLONE
+    rm -frv $DIRETORY_TO_CLONE
     mkdir -pv $DIRETORY_TO_CLONE
 
     cd $DIRETORY_TO_CLONE
@@ -142,6 +144,7 @@ github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteracti
 --command \
 bash <<-EOF
     echo $DIRETORY_TO_CLONE
+    rm -frv $DIRETORY_TO_CLONE
     mkdir -pv $DIRETORY_TO_CLONE
 
     cd $DIRETORY_TO_CLONE
