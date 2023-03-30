@@ -350,6 +350,13 @@
       )
 
     (
+      writeScriptBin "hms" ''
+        export NIXPKGS_ALLOW_UNFREE=1; \
+        home-manager switch --impure --flake "$HOME/.config/nixpkgs"
+      ''
+    )
+
+    (
       writeScriptBin "gphms" ''
         echo $(cd "$HOME/.config/nixpkgs" && git pull) \
         && export NIXPKGS_ALLOW_UNFREE=1; \
@@ -376,6 +383,8 @@
     # export NIX_CONFIG='extra-experimental-features = nix-command flakes'
     extraOptions = ''
       experimental-features = nix-command flakes
+      trusted-public-keys = binarycache-1:tcdI+LZIBrh5xmvW2P0NO5ZPwTKpkCoGq3Hmmj58yOI=
+      substituters = https://playing-bucket-nix-cache-test.s3.amazonaws.com
     '';
 
     settings = {
