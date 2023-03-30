@@ -25,18 +25,18 @@ Existem 3 tipos de configurações, descritos nas próximas seções.
 ```bash
 # Precisa das variáveis de ambiente USER e HOME
 
-DIRETORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
+DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 
 nix \
 shell \
 github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteractive,coreutils,gnused,home-manager} \
 --command \
 bash <<-EOF
-    echo $DIRETORY_TO_CLONE
-    rm -frv $DIRETORY_TO_CLONE
-    mkdir -pv $DIRETORY_TO_CLONE
+    echo $DIRECTORY_TO_CLONE
+    rm -frv $DIRECTORY_TO_CLONE
+    mkdir -pv $DIRECTORY_TO_CLONE
 
-    cd $DIRETORY_TO_CLONE
+    cd $DIRECTORY_TO_CLONE
     
     nix \
     flake \
@@ -80,18 +80,18 @@ EOF
 ```bash
 # Precisa das variáveis de ambiente USER e HOME
 
-DIRETORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
+DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 
 nix \
 shell \
 github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteractive,coreutils,gnused,home-manager} \
 --command \
 bash <<-EOF
-    echo $DIRETORY_TO_CLONE
-    rm -frv $DIRETORY_TO_CLONE
-    mkdir -pv $DIRETORY_TO_CLONE
+    echo $DIRECTORY_TO_CLONE
+    rm -frv $DIRECTORY_TO_CLONE
+    mkdir -pv $DIRECTORY_TO_CLONE
 
-    cd $DIRETORY_TO_CLONE
+    cd $DIRECTORY_TO_CLONE
     
     nix \
     flake \
@@ -136,18 +136,18 @@ EOF
 ```bash
 # Precisa das variáveis de ambiente USER e HOME
 
-DIRETORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
+DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 
 nix \
 shell \
 github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteractive,coreutils,gnused,home-manager} \
 --command \
 bash <<-EOF
-    echo $DIRETORY_TO_CLONE
-    rm -frv $DIRETORY_TO_CLONE
-    mkdir -pv $DIRETORY_TO_CLONE
+    echo $DIRECTORY_TO_CLONE
+    rm -frv $DIRECTORY_TO_CLONE
+    mkdir -pv $DIRECTORY_TO_CLONE
 
-    cd $DIRETORY_TO_CLONE
+    cd $DIRECTORY_TO_CLONE
     
     nix \
     flake \
