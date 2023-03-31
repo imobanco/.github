@@ -52,6 +52,18 @@ bash <<-EOF
     && git status \
     && git add .
     
+    # TODO: ainda não foi testado
+    nix \
+    --option eval-cache false \
+    --option extra-trusted-public-keys binarycache-1:vBBc6CVmjXj5dPH0x5zPPZvkc1U9QbVoSqHcUcx6cSY= \
+    --option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
+    build \
+    --keep-failed \
+    --max-jobs 0 \
+    --no-link \
+    --print-build-logs \
+    --print-out-paths \
+    ~/.config/nixpkgs#homeConfigurations.vagrant.activationPackage
     
     export NIXPKGS_ALLOW_UNFREE=1 \
     && home-manager switch -b backuphm --impure --flake /home/"$USER"/.config/nixpkgs \
@@ -206,3 +218,43 @@ https://github.com/imobanco/.config-nixpkgs
 # rm -frv /home/"$USER"/.config/nixpkgs/.git
 ```
 
+
+
+### Mac
+
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
+&& echo 'eval "$(/opt/homebrew/bin/brew shellenv)' >> "$HOME"/.zprofile
+```
+
+
+
+```bash
+brew install hello
+```
+
+
+```bash
+brew uninstall hello
+```
+
+```bash
+NIX_RELEASE_VERSION=2.10.2 \
+&& curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s
+
+export NIX_CONFIG='extra-experimental-features = nix-command flakes'
+```
+
+
+```bash
+nix build -L --no-link --rebuild nixpkgs#hello
+```
+
+```bash
+nix build -L nixpkgs#pkgsCross.x86_64-embedded.hello
+```
+
+```bash
+nix build -L nixpkgs#pkgsCross.x86_64-embedded.pkgsStatic.hello
+```
