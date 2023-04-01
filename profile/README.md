@@ -92,7 +92,7 @@ EOF
 ```bash
 # Precisa das variáveis de ambiente USER e HOME
 
-DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
+DIRECTORY_TO_CLONE="$(pwd)"
 
 nix \
 shell \
@@ -132,27 +132,8 @@ bash <<-EOF
     --print-build-logs \
     --print-out-paths \
     --store ssh-ng://builder \
-    --substituters '' \
-    ~/.config/nixpkgs#homeConfigurations."$(id -un)"-"$(hostname)".activationPackage
-
-    && home-manager switch -b backuphm --impure --flake /home/"$USER"/.config/nixpkgs#"$(id -un)"-"$(hostname)" \
-    && home-manager generations
-
-
-    #
-    TARGET_SHELL='zsh' \
-    && FULL_TARGET_SHELL=/home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
-    && echo \
-    && ls -al "\$FULL_TARGET_SHELL" \
-    && echo \
-    && echo "\$FULL_TARGET_SHELL" | sudo tee -a /etc/shells \
-    && echo \
-    && sudo \
-          -k \
-          usermod \
-          -s \
-          /home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
-          "$USER"
+    --substituters "" \
+    .#homeConfigurations."$(id -un)"-"$(hostname)".activationPackage
 EOF
 ```
 
