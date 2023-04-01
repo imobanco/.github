@@ -17,6 +17,13 @@ NIX_RELEASE_VERSION=2.10.2 \
 export NIX_CONFIG='extra-experimental-features = nix-command flakes'
 ```
 
+nix \
+store \
+gc \
+--verbose \
+--option keep-derivations false \
+--option keep-outputs false \
+&& nix-collect-garbage --delete-old
 
 Existem 3 tipos de configurações, descritos nas próximas seções.
 
@@ -90,9 +97,23 @@ EOF
 
 
 ```bash
+tee ~/.ssh/config <<EOF
+Host builder
+    HostName localhost
+    User nixuser
+    Port 2221
+    PubkeyAcceptedKeyTypes ssh-ed25519
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/id_ed25519
+    LogLevel INFO
+EOF
+```
+
+
+```bash
 # Precisa das variáveis de ambiente USER e HOME
 
-DIRECTORY_TO_CLONE="$(pwd)"
+DIRECTORY_TO_CLONE="$(pwd)"/test-home-manager-s3-cache
 
 nix \
 shell \
@@ -109,7 +130,7 @@ bash <<-EOF
     flake \
     init \
     --template \
-    github:PedroRegisPOAR/.github/feature/dx-with-nix-and-home-manager#templates.x86_64-linux.startConfig
+    github:PedroRegisPOAR/.github/feature/dx-with-nix-and-home-manager#templates.x86_64-linux.startSlimConfig
     
     sed -i 's/username = ".*";/username = "'"$(id -un)"'";/g' flake.nix \
     && sed -i 's/hostname = ".*";/hostname = "'"$(hostname)"'";/g' flake.nix \
@@ -136,6 +157,70 @@ bash <<-EOF
     .#homeConfigurations."$(id -un)"-"$(hostname)".activationPackage
 EOF
 ```
+
+
+
+```bash
+# Precisa das variáveis de ambiente USER e HOME
+
+DIRECTORY_TO_CLONE="$(pwd)"/test-home-manager-s3-cache
+
+
+export DUMMY_USER=alpine
+# export USER="$USER"
+# export USER="$(id -un)"
+
+# TODO: Mac
+# export HOME="$HOME"
+export DUMMY_HOME=/home/"$USER"
+
+export DUMMY_HOSTNAME=alpine316.localdomain
+# export HOSTNAME="$(hostname)"
+
+
+nix \
+shell \
+github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteractive,coreutils,gnused,home-manager} \
+--command \
+bash <<-EOF
+    echo $DIRECTORY_TO_CLONE
+    rm -frv $DIRECTORY_TO_CLONE
+    mkdir -pv $DIRECTORY_TO_CLONE
+
+    cd $DIRECTORY_TO_CLONE
+    
+    nix \
+    flake \
+    init \
+    --template \
+    github:PedroRegisPOAR/.github/feature/dx-with-nix-and-home-manager#templates.x86_64-linux.startSlimConfig
+    
+    sed -i 's/username = ".*";/username = "'"$DUMMY_USER"'";/g' flake.nix \
+    && sed -i 's/hostname = ".*";/hostname = "'"$DUMMY_HOSTNAME"'";/g' flake.nix \
+    && git init \
+    && git status \
+    && git add . \
+    && nix flake update --override-input nixpkgs github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb \
+    && git status \
+    && git add .
+    
+    export NIXPKGS_ALLOW_UNFREE=1 
+
+    nix \
+    build \
+    --impure \
+    --eval-store auto \
+    --keep-failed \
+    --max-jobs 0 \
+    --no-link \
+    --print-build-logs \
+    --print-out-paths \
+    --store ssh-ng://builder \
+    --substituters "" \
+    .#homeConfigurations.\""$DUMMY_USER"-"$DUMMY_HOSTNAME"\".activationPackage
+EOF
+```
+
 
 
 1.2) Apenas programas CLI, slim:
