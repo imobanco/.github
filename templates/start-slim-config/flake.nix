@@ -33,7 +33,7 @@
           # to pass through arguments to home.nix
         };
 
-        devShells.default = pkgsAllowUnfree.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = with pkgsAllowUnfree; [
             bashInteractive
             coreutils
