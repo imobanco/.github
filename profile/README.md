@@ -200,9 +200,6 @@ bash <<-EOF
 EOF
 ```
 
-    --max-jobs 0 \
-    --store ssh-ng://builder \
-    --substituters "" \
 
 
 ```bash
