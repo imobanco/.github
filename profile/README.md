@@ -34,6 +34,22 @@ Existem 3 tipos de configurações, descritos nas próximas seções.
 
 DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 
+
+# export DUMMY_USER=alpine
+export DUMMY_USER="$USER"
+# export DUMMY_USER="$(id -un)"
+
+# TODO: Mac
+# export DUMMY_HOME="$HOME"
+export DUMMY_HOME=/home/"$USER"
+
+# export DUMMY_HOSTNAME=alpine316.localdomain
+export DUMMY_HOSTNAME="$(hostname)"
+
+HM_ATTR_FULL_NAME='"'"$DUMMY_USER"-"$DUMMY_HOSTNAME"'"'
+FLAKE_ATTR="$DIRECTORY_TO_CLONE""#homeConfigurations."'\"'"$HM_ATTR_FULL_NAME"'\"'".activationPackage"
+
+
 nix \
 shell \
 github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteractive,coreutils,gnused,home-manager} \
@@ -49,9 +65,10 @@ bash <<-EOF
     flake \
     init \
     --template \
-    github:PedroRegisPOAR/.github/feature/dx-with-nix-and-home-manager#templates.x86_64-linux.startConfig
+    github:PedroRegisPOAR/.github/feature/dx-with-nix-and-home-manager#templates.x86_64-linux.startSlimConfig
     
-    sed -i 's/username = ".*";/username = "'$USER'";/g' flake.nix \
+    sed -i 's/username = ".*";/username = "'$DUMMY_USER'";/g' flake.nix \
+    && sed -i 's/hostname = ".*";/hostname = "'"$DUMMY_HOSTNAME"'";/g' flake.nix \
     && git init \
     && git status \
     && git add . \
@@ -59,10 +76,10 @@ bash <<-EOF
     && git status \
     && git add .
     
-    # TODO: ainda não foi testado
+    echo "$FLAKE_ATTR"
     nix \
     --option eval-cache false \
-    --option extra-trusted-public-keys binarycache-1:vBBc6CVmjXj5dPH0x5zPPZvkc1U9QbVoSqHcUcx6cSY= \
+    --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
     --option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
     build \
     --keep-failed \
@@ -70,16 +87,15 @@ bash <<-EOF
     --no-link \
     --print-build-logs \
     --print-out-paths \
-    ~/.config/nixpkgs#homeConfigurations.vagrant.activationPackage
+    "$FLAKE_ATTR"
     
     export NIXPKGS_ALLOW_UNFREE=1 \
-    && home-manager switch -b backuphm --impure --flake /home/"$USER"/.config/nixpkgs \
+    && home-manager switch -b backuphm --impure --flake "$DIRECTORY_TO_CLONE"#"$HM_ATTR_FULL_NAME" \
     && home-manager generations
-    
     
     #
     TARGET_SHELL='zsh' \
-    && FULL_TARGET_SHELL=/home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
+    && FULL_TARGET_SHELL=/home/"$DUMMY_USER"/.nix-profile/bin/"\$TARGET_SHELL" \
     && echo \
     && ls -al "\$FULL_TARGET_SHELL" \
     && echo \
@@ -89,12 +105,25 @@ bash <<-EOF
           -k \
           usermod \
           -s \
-          /home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
-          "$USER"
+          /home/"$DUMMY_USER"/.nix-profile/bin/"\$TARGET_SHELL" \
+          "$DUMMY_USER"
+    
 EOF
 ```
 
-
+```bash
+nix \
+--option eval-cache false \
+--option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
+--option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
+build \
+--keep-failed \
+--max-jobs 0 \
+--no-link \
+--print-build-logs \
+--print-out-paths \
+/nix/store/8c3ssm2avqxyfhcz7jik9s857s3kyz0q-home-manager-generation
+```
 
 ```bash
 tee ~/.ssh/config <<EOF
@@ -113,7 +142,8 @@ EOF
 ```bash
 # Precisa das variáveis de ambiente USER e HOME
 
-DIRECTORY_TO_CLONE="$(pwd)"/test-home-manager-s3-cache
+# DIRECTORY_TO_CLONE="$(pwd)"/test-home-manager-s3-cache
+DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 
 nix \
 shell \
@@ -148,16 +178,31 @@ bash <<-EOF
     --impure \
     --eval-store auto \
     --keep-failed \
-    --max-jobs 0 \
     --no-link \
     --print-build-logs \
     --print-out-paths \
-    --store ssh-ng://builder \
-    --substituters "" \
-    .#homeConfigurations."$(id -un)"-"$(hostname)".activationPackage
+    '.#homeConfigurations."$(id -un)"-"$(hostname)".activationPackage'
+    
+    #
+    TARGET_SHELL='zsh' \
+    && FULL_TARGET_SHELL=/home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
+    && echo \
+    && ls -al "\$FULL_TARGET_SHELL" \
+    && echo \
+    && echo "\$FULL_TARGET_SHELL" | sudo tee -a /etc/shells \
+    && echo \
+    && sudo \
+          -k \
+          usermod \
+          -s \
+          /home/"$USER"/.nix-profile/bin/"\$TARGET_SHELL" \
+          "$USER"    
 EOF
 ```
 
+    --max-jobs 0 \
+    --store ssh-ng://builder \
+    --substituters "" \
 
 
 ```bash
@@ -166,7 +211,7 @@ EOF
 DIRECTORY_TO_CLONE="$(pwd)"/test-home-manager-s3-cache
 
 
-export DUMMY_USER=alpine
+export DUMMY_USER=vagrant
 # export USER="$USER"
 # export USER="$(id -un)"
 
@@ -277,7 +322,7 @@ EOF
 cd $DIRECTORY_TO_CLONE
 
 # echo "$FLAKE_ATTR"
-nix eval --raw "$FLAKE_ATTR"
+# nix eval --raw "$FLAKE_ATTR"
 
 export NIXPKGS_ALLOW_UNFREE=1 
 
@@ -286,17 +331,48 @@ build \
 --impure \
 --eval-store auto \
 --keep-failed \
+--max-jobs 0 \
 --no-link \
 --print-build-logs \
 --print-out-paths \
+--store ssh-ng://builder \
+--substituters "" \
 "$FLAKE_ATTR"
+
 
 CACHE=s3://playing-bucket-nix-cache-test/
 
-nix copy --no-check-sigs --eval-store auto -vvvv --to "$CACHE" \
-$(nix eval --raw "$FLAKE_ATTR")
+nix-store --query --requisites --include-outputs --force-realise \
+$(nix path-info "$FLAKE_ATTR") \
+| xargs -I{} nix \
+    copy \
+    -vvvv \
+    --no-check-sigs \
+    {} \
+    --to 's3://playing-bucket-nix-cache-test'
+
+
+#nix copy --no-check-sigs --eval-store auto -vvvv --to "$CACHE" \
+#$(nix eval --raw "$FLAKE_ATTR")
 ```
 
+
+export NIXPKGS_ALLOW_UNFREE=1 
+
+nix-store --query --requisites --include-outputs \
+$(nix path-info --impure "$FLAKE_ATTR" ) | wc -l
+
+```bash
+export NIXPKGS_ALLOW_UNFREE=1 
+
+nix-store --query --requisites --include-outputs \
+$(nix path-info --impure ~/.config/nixpkgs#homeConfigurations."$USER"-"$(hostname)".activationPackage ) | wc -l
+```
+
+```bash
+nix-store --query --requisites --include-outputs \
+$(nix path-info --impure --derivation ~/.config/nixpkgs#homeConfigurations."$USER"-"$(hostname)".activationPackage ) | wc -l
+```
 
 
 ```bash
