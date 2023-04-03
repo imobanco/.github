@@ -31,5 +31,22 @@
           # TODO: how to: Optionally use extraSpecialArgs
           # to pass through arguments to home.nix
         };
+
+        devShells.default = pkgsAllowUnfree.mkShell {
+          buildInputs = with pkgsAllowUnfree; [
+            bashInteractive
+            coreutils
+            curl
+            gnumake
+            patchelf
+            poetry
+            python3Full
+            tmate
+          ];
+
+          shellHook = ''
+            echo -e 'IMO \n Banco' | "${pkgsAllowUnfree.figlet}/bin/figlet" | cat
+          '';
+        };
       };
   }

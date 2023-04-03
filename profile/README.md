@@ -222,6 +222,110 @@ EOF
 ```
 
 
+Running it directly in the builder:
+```bash
+# Precisa das variáveis de ambiente USER e HOME
+
+DIRECTORY_TO_CLONE="$(pwd)"/test-home-manager-s3-cache
+
+
+export DUMMY_USER=alpine
+# export USER="$USER"
+# export USER="$(id -un)"
+
+# TODO: Mac
+# export HOME="$HOME"
+export DUMMY_HOME=/home/"$USER"
+
+export DUMMY_HOSTNAME=alpine316.localdomain
+# export HOSTNAME="$(hostname)"
+
+HM_ATTR_FULL_NAME='"'"$DUMMY_USER"-"$DUMMY_HOSTNAME"'"'
+FLAKE_ATTR=".#homeConfigurations.""$HM_ATTR_FULL_NAME"".activationPackage"
+
+
+time \
+nix \
+shell \
+--refresh \
+github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteractive,coreutils,gnused,home-manager} \
+--command \
+bash <<-EOF
+    echo $DIRECTORY_TO_CLONE
+    rm -frv $DIRECTORY_TO_CLONE
+    mkdir -pv $DIRECTORY_TO_CLONE
+
+    cd $DIRECTORY_TO_CLONE
+    
+    nix \
+    flake \
+    init \
+    --template \
+    github:PedroRegisPOAR/.github/feature/dx-with-nix-and-home-manager#templates.x86_64-linux.startSlimConfig
+    
+    sed -i 's/username = ".*";/username = "'"$DUMMY_USER"'";/g' flake.nix \
+    && sed -i 's/hostname = ".*";/hostname = "'"$DUMMY_HOSTNAME"'";/g' flake.nix \
+    && git init \
+    && git status \
+    && git add . \
+    && nix flake update --override-input nixpkgs github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb \
+    && git status \
+    && git add .
+EOF
+
+
+cd $DIRECTORY_TO_CLONE
+
+# echo "$FLAKE_ATTR"
+nix eval --raw "$FLAKE_ATTR"
+
+export NIXPKGS_ALLOW_UNFREE=1 
+
+nix \
+build \
+--impure \
+--eval-store auto \
+--keep-failed \
+--no-link \
+--print-build-logs \
+--print-out-paths \
+"$FLAKE_ATTR"
+
+CACHE=s3://playing-bucket-nix-cache-test/
+
+nix copy --no-check-sigs --eval-store auto -vvvv --to "$CACHE" \
+$(nix eval --raw "$FLAKE_ATTR")
+```
+
+
+
+```bash
+rm -frv "$DIRECTORY_TO_CLONE"
+```
+
+```bash
+nix \
+--option trusted-public-keys binarycache-1:PbJHKsLPq2DJ2OXhvqk1VgwFl04tvaHz3PzjZrrFNh0= \
+store \
+ls \
+--store 's3://playing-bucket-nix-cache-test/' \
+--long \
+--recursive \
+$(nix eval --raw "$FLAKE_ATTR")
+```
+
+
+```bash
+nix \
+--option trusted-public-keys binarycache-1:PbJHKsLPq2DJ2OXhvqk1VgwFl04tvaHz3PzjZrrFNh0= \
+store \
+ls \
+--store 's3://playing-bucket-nix-cache-test/' \
+--long \
+--recursive \
+$(nix eval --raw github:NixOS/nixpkgs/3954218cf613eba8e0dcefa9abe337d26bc48fd0#blender)
+```
+
 
 1.2) Apenas programas CLI, slim:
 
