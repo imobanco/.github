@@ -48,7 +48,7 @@
           ];
 
           shellHook = ''
-            echo -e 'IMO \n Banco' | "${pkgsAllowUnfree.figlet}/bin/figlet" | cat
+            echo -e 'IMO \n Banco' | "${pkgs.figlet}/bin/figlet" | cat
           '';
         };
 
