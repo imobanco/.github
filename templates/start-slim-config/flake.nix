@@ -13,6 +13,8 @@
         system = "x86_64-linux";
         username = "1M0b4nc0";
         hostname = "fooo";
+
+        pkgs = nixpkgs.legacyPackages.${system};
       in {
         homeConfigurations."${username}-${hostname}" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${system};
