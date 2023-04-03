@@ -36,7 +36,7 @@
         };
 
         devShells.default = pkgs.mkShell {
-          buildInputs = with pkgsAllowUnfree; [
+          buildInputs = with pkgs; [
             bashInteractive
             coreutils
             curl
