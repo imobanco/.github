@@ -33,8 +33,8 @@
           # to pass through arguments to home.nix
         };
 
-        devShells.default = pkgsAllowUnfree.mkShell {
-          buildInputs = with pkgsAllowUnfree; [
+        devShells.default = pkgs.mkShell {
+          buildInputs = with pkgs; [
             bashInteractive
             coreutils
             curl
@@ -44,10 +44,6 @@
             python3Full
             tmate
           ];
-
-          shellHook = ''
-            echo -e 'IMO \n Banco' | "${pkgsAllowUnfree.figlet}/bin/figlet" | cat
-          '';
         };
       };
   }

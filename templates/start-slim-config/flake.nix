@@ -35,7 +35,7 @@
           # to pass through arguments to home.nix
         };
 
-        devShells.default = pkgs.mkShell {
+        devShells.x86_64-linux.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             bashInteractive
             coreutils
@@ -46,10 +46,6 @@
             python3Full
             tmate
           ];
-
-          shellHook = ''
-            echo -e 'IMO \n Banco' | "${pkgs.figlet}/bin/figlet" | cat
-          '';
         };
 
       };
