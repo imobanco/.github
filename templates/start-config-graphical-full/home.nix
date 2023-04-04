@@ -260,10 +260,17 @@
       )
 
     (
+      writeScriptBin "hms" ''
+        export NIXPKGS_ALLOW_UNFREE=1; \
+        home-manager switch --impure --flake "$HOME/.config/nixpkgs"#"$(id -un)"-"$(hostname)"
+      ''
+    )
+
+    (
       writeScriptBin "gphms" ''
         echo $(cd "$HOME/.config/nixpkgs" && git pull) \
         && export NIXPKGS_ALLOW_UNFREE=1; \
-        home-manager switch --impure --flake "$HOME/.config/nixpkgs"
+        home-manager switch --impure --flake "$HOME/.config/nixpkgs"#"$(id -un)"-"$(hostname)"
       ''
     )
 
