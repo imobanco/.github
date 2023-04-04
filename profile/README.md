@@ -77,6 +77,7 @@ bash <<-EOF
     && git add .
     
     echo "$FLAKE_ATTR"
+    # TODO: --max-jobs 0 \
     nix \
     --option eval-cache false \
     --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
