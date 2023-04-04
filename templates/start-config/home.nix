@@ -368,6 +368,38 @@
       ''
     )
 
+      (
+        writeScriptBin "build-pulling-all-from-cache" ''
+         #! ${pkgs.runtimeShell} -e
+
+            set -x
+
+            nix \
+            --option eval-cache false \
+            --option extra-trusted-public-keys binarycache-1:297elYH7T55M/46HB/OvrDQ8ATo4+WbQOwmgKrqoy/Q= \
+            --option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
+            build \
+            --keep-failed \
+            --max-jobs 0 \
+            --no-link \
+            --print-build-logs \
+            --print-out-paths \
+            ~/.config/nixpkgs#homeConfigurations."$(id -un)"-"$(hostname)".activationPackage
+        ''
+      )
+
+    (
+      writeScriptBin "gphms-cache" ''
+        #! ${pkgs.runtimeShell} -e
+
+        build-pulling-all-from-cache
+
+        echo $(cd "$HOME/.config/nixpkgs" && git pull) \
+        && export NIXPKGS_ALLOW_UNFREE=1; \
+        home-manager switch --impure --flake "$HOME/.config/nixpkgs"#"$(id -un)"-"$(hostname)"
+      ''
+    )
+
     (
       writeScriptBin "nr" ''
         nix repl --expr 'import <nixpkgs> {}'
