@@ -17,13 +17,6 @@ NIX_RELEASE_VERSION=2.10.2 \
 export NIX_CONFIG='extra-experimental-features = nix-command flakes'
 ```
 
-nix \
-store \
-gc \
---verbose \
---option keep-derivations false \
---option keep-outputs false \
-&& nix-collect-garbage --delete-old
 
 Existem 3 tipos de configurações, descritos nas próximas seções.
 
