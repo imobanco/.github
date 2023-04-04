@@ -35,6 +35,7 @@
     lsof
     tree
     killall
+    btop
 #    nmap
 #    netcat
 #    nettools
