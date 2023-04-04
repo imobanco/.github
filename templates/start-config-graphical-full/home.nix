@@ -280,8 +280,15 @@
 
             set -x
 
+            export NIXPKGS_ALLOW_UNFREE=1
+
             nix \
             --option eval-cache false \
+            --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
+            --option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
+            build \
+            --impure \
+            --keep-failed \
             --option extra-trusted-public-keys binarycache-1:297elYH7T55M/46HB/OvrDQ8ATo4+WbQOwmgKrqoy/Q= \
             --option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
             build \
