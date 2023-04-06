@@ -535,8 +535,8 @@ https://github.com/imobanco/.config-nixpkgs
 
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
-&& echo 'eval "$(/opt/homebrew/bin/brew shellenv)' >> "$HOME"/.zprofile
+NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/fc8acb0828f89f8aa83162000db1b49de71fa5d8/install.sh)" \
+&& echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
 ```
 
 
@@ -549,6 +549,8 @@ brew install hello
 ```bash
 brew uninstall hello
 ```
+
+#### Mac and nix
 
 ```bash
 NIX_RELEASE_VERSION=2.10.2 \
