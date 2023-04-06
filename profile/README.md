@@ -555,7 +555,8 @@ brew uninstall hello
 ```bash
 NIX_RELEASE_VERSION=2.10.2 \
 && curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s \
-&& echo 'export NIX_CONFIG="extra-experimental-features = "nix-command flakes"' >> "$HOME"/.zprofile
+&& echo 'export NIX_CONFIG="extra-experimental-features = 'nix-command flakes"' >> "$HOME"/.zprofile \
+&& nix profile install nixpkgs#hello nixpkgs#tmate
 ```
 
 
