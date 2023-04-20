@@ -558,20 +558,87 @@ NIX_RELEASE_VERSION=2.10.2 \
 && echo 'export NIX_CONFIG="extra-experimental-features = 'nix-command flakes'"' >> "$HOME"/.zprofile
 ```
 
-Close and open the terminal:
+Feche o terminal.
+
+Abra o terminal:
 ```bash
 nix profile install nixpkgs#hello nixpkgs#tmate
 ```
 
+```bash
+nix eval --impure --raw --expr 'builtins.currentSystem'
+```
+
 
 ```bash
-nix build -L --no-link --rebuild nixpkgs#hello
+nix build --no-link --print-build-logs --rebuild nixpkgs#hello
 ```
 
 ```bash
-nix build -L nixpkgs#pkgsCross.x86_64-embedded.hello
+nix build --print-build-logs nixpkgs#pkgsCross.x86_64-embedded.hello
 ```
 
 ```bash
-nix build -L nixpkgs#pkgsCross.x86_64-embedded.pkgsStatic.hello
+nix build --print-build-logs nixpkgs#pkgsCross.x86_64-embedded.pkgsStatic.hello
+```
+
+```bash
+nix build --no-link --print-build-logs github:NixOS/nixpkgs/nixpkgs-unstable#darwin.builder
+```
+
+
+```bash
+EXPR_NIX='
+  (
+    with builtins.getFlake "github:NixOS/nixpkgs/da0b0bc6a5d699a8a9ffbf9e1b19e8642307062a";
+    with legacyPackages.${builtins.currentSystem};
+    python3.withPackages (p: with p; [ pandas ])
+  )
+'
+
+# --rebuild \
+nix \
+build \
+--impure \
+--option enforce-determinism false \
+--no-link \
+--print-build-logs \
+--expr \
+"$EXPR_NIX"
+
+
+nix \
+shell \
+--impure \
+--expr \
+"$EXPR_NIX" \
+--command \
+python3 -c 'import pandas as pd; pd.DataFrame(); print(pd.__version__)'
+```
+
+Quebrado:
+```bash
+nix \
+build \
+--impure \
+--no-enforce-determinism \
+--no-link \
+--print-build-logs \
+--rebuild \
+--expr \
+"$EXPR_NIX"
+```
+
+
+Quebrado:
+```bash
+nix \
+build \
+--impure \
+--builders "" \
+--no-link \
+--print-build-logs \
+--rebuild \
+--expr \
+"$EXPR_NIX"
 ```

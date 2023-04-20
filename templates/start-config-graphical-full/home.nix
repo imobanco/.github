@@ -301,7 +301,7 @@
       writeScriptBin "gphms-cache" ''
         #! ${pkgs.runtimeShell} -e
 
-        build-pulling-all-from-cache
+        build-pulling-all-from-cache || true
 
         echo $(cd "$HOME/.config/nixpkgs" && git pull) \
         && export NIXPKGS_ALLOW_UNFREE=1; \
