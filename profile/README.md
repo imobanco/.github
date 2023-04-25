@@ -4,17 +4,49 @@
 
 ## Template
 
+
 1)
+
+Versão curta:
+```bash
+wget -qO- http://ix.io/4tTQ | sh \
+&& . "$HOME"/."$(basename $SHELL)"rc \
+&& nix flake --version
+```
+
+Versão longa:
 ```bash
 command -v curl || (command -v apt && sudo apt-get update && sudo apt-get install -y curl)
-command -v curl || (command -v apk && sudo apk add --no-cache -y curl)
+command -v curl || (command -v apk && sudo apk add --no-cache curl)
 
 
 NIX_RELEASE_VERSION=2.10.2 \
 && curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s -- --no-daemon \
 && . "$HOME"/.nix-profile/etc/profile.d/nix.sh
 
-export NIX_CONFIG='extra-experimental-features = nix-command flakes'
+NAME_SHELL=$(basename $SHELL) \
+&& echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo '. "$HOME"/.nix-profile/etc/profile.d/nix.sh' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/.profile \
+&& echo '. "$HOME"/.nix-profile/etc/profile.d/nix.sh' >> "$HOME"/.profile \
+&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/.profile \
+&& . "$HOME"/."$NAME_SHELL"rc \
+&& . "$HOME"/.profile \
+&& nix flake --version \
+&& nix --extra-experimental-features 'nix-command flakes' profile install -vvv nixpkgs#direnv nixpkgs#git \
+&& . "$HOME"/."$NAME_SHELL"rc \
+&& . "$HOME"/.profile
+```
+
+Crie um arquivo e copie e cole o bloco de código acima.
+```bash
+vi arquivo.txt
+```
+
+Após salvar:
+```bash
+cat arquivo.txt | curl -F 'f:1=<-' ix.io
 ```
 
 
@@ -43,13 +75,20 @@ HM_ATTR_FULL_NAME='"'"$DUMMY_USER"-"$DUMMY_HOSTNAME"'"'
 FLAKE_ATTR="$DIRECTORY_TO_CLONE""#homeConfigurations."'\"'"$HM_ATTR_FULL_NAME"'\"'".activationPackage"
 
 
+BASE_FLAKE_URI='github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#'
+
 time \
 nix \
+--extra-experimental-features 'nix-command flakes' \
 --option eval-cache false \
 --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
 --option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
 shell \
-github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#{git,bashInteractive,coreutils,gnused,home-manager} \
+"$BASE_FLAKE_URI"git \
+"$BASE_FLAKE_URI"bashInteractive \
+"$BASE_FLAKE_URI"coreutils \
+"$BASE_FLAKE_URI"gnused \
+"$BASE_FLAKE_URI"home-manager \
 --command \
 bash <<-EOF
     echo $DIRECTORY_TO_CLONE
@@ -58,7 +97,12 @@ bash <<-EOF
 
     cd $DIRECTORY_TO_CLONE
     
+    export NIX_CONFIG='extra-experimental-features = nix-command flakes'
+    
+    echo $NIX_CONFIG
+    
     nix \
+    --extra-experimental-features 'nix-command flakes' \
     flake \
     init \
     --template \
@@ -76,6 +120,7 @@ bash <<-EOF
     echo "$FLAKE_ATTR"
     # TODO: --max-jobs 0 \
     nix \
+    --extra-experimental-features 'nix-command flakes' \
     --option eval-cache false \
     --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
     --option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
@@ -87,9 +132,14 @@ bash <<-EOF
     --print-out-paths \
     "$FLAKE_ATTR"
     
+    nix --extra-experimental-features 'nix-command flakes' -vvv profile remove '.*'
+
     export NIXPKGS_ALLOW_UNFREE=1 \
-    && home-manager switch -b backuphm --impure --flake "$DIRECTORY_TO_CLONE"#"$HM_ATTR_FULL_NAME" \
+    && home-manager switch -b backuphm --impure --flake \
+         "$DIRECTORY_TO_CLONE"#"$HM_ATTR_FULL_NAME" \
     && home-manager generations
+    
+    
     
     #
     TARGET_SHELL='zsh' \
@@ -101,13 +151,42 @@ bash <<-EOF
     && echo \
     && sudo \
           -k \
-          usermod \
+          /usr/sbin/usermod \
           -s \
           /home/"$DUMMY_USER"/.nix-profile/bin/"\$TARGET_SHELL" \
           "$DUMMY_USER"
     
 EOF
 ```
+
+
+Versão curta:
+```bash
+wget -qO- http://ix.io/4udn | sh \
+&& . "$HOME"/."$(basename $SHELL)"rc \
+&& nix flake --version
+```
+
+```bash
+export NIXPKGS_ALLOW_UNFREE=1
+
+FLAKE_EXPR='github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#direnv'
+
+nix build --no-link --print-build-logs "$FLAKE_EXPR"
+
+nix path-info --impure --recursive "$FLAKE_EXPR" \
+| wc -l
+
+nix path-info --impure --recursive "$FLAKE_EXPR" \
+| xargs -I{} nix \
+    copy \
+    --max-jobs $(nproc) \
+    -vvv \
+    --no-check-sigs \
+    {} \
+    --to 's3://playing-bucket-nix-cache-test'
+```
+
 
 ```bash
 nix \
@@ -429,7 +508,8 @@ bash <<-EOF
     && nix flake update --override-input nixpkgs github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb \
     && git status \
     && git add .
-    
+
+    nix profile remove '.*'   
     
     export NIXPKGS_ALLOW_UNFREE=1 \
     && home-manager switch -b backuphm --impure --flake /home/"$USER"/.config/nixpkgs \
@@ -486,6 +566,7 @@ bash <<-EOF
     && git status \
     && git add .
     
+    nix profile remove '.*'
     
     export NIXPKGS_ALLOW_UNFREE=1 \
     && home-manager switch -b backuphm --impure --flake /home/"$USER"/.config/nixpkgs \

@@ -107,6 +107,7 @@
 #    asciinema
     git
     openssh
+    awscli
 
       (
         writeScriptBin "ix" ''
@@ -123,9 +124,39 @@
        )
 
       (
+        writeScriptBin "frw" ''
+         #! ${pkgs.runtimeShell} -e
+         file "$(readlink -f "$(which $1)")"
+       ''
+       )
+
+      (
         writeScriptBin "crw" ''
          #! ${pkgs.runtimeShell} -e
          cat "$(readlink -f "$(which $1)")"
+       ''
+      )
+
+      (
+        writeScriptBin "send-closure-run-time-of-flake-attr-to-bucket" ''
+         #! ${pkgs.runtimeShell} -e
+
+            export NIXPKGS_ALLOW_UNFREE=1
+            FLAKE_EXPR=$1
+
+            nix build --no-link --print-build-logs "$FLAKE_EXPR"
+
+            nix path-info --impure --recursive "$FLAKE_EXPR" \
+            | wc -l
+
+            nix path-info --impure --recursive "$FLAKE_EXPR" \
+            | xargs -I{} nix \
+                copy \
+                --max-jobs $(nproc) \
+                -vvv \
+                --no-check-sigs \
+                {} \
+                --to 's3://playing-bucket-nix-cache-test'
        ''
       )
 
