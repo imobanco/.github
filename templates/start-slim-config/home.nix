@@ -94,7 +94,7 @@
     # julia-bin
 
 #    graphviz # dot command comes from here
-#    jq
+    jq
 #    unixtools.xxd
 
 #    gzip

@@ -138,9 +138,7 @@ bash <<-EOF
     && home-manager switch -b backuphm --impure --flake \
          "$DIRECTORY_TO_CLONE"#"$HM_ATTR_FULL_NAME" \
     && home-manager generations
-    
-    
-    
+
     #
     TARGET_SHELL='zsh' \
     && FULL_TARGET_SHELL=/home/"$DUMMY_USER"/.nix-profile/bin/"\$TARGET_SHELL" \
@@ -165,26 +163,6 @@ Versão curta:
 wget -qO- http://ix.io/4udn | sh \
 && . "$HOME"/."$(basename $SHELL)"rc \
 && nix flake --version
-```
-
-```bash
-export NIXPKGS_ALLOW_UNFREE=1
-
-FLAKE_EXPR='github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#direnv'
-
-nix build --no-link --print-build-logs "$FLAKE_EXPR"
-
-nix path-info --impure --recursive "$FLAKE_EXPR" \
-| wc -l
-
-nix path-info --impure --recursive "$FLAKE_EXPR" \
-| xargs -I{} nix \
-    copy \
-    --max-jobs $(nproc) \
-    -vvv \
-    --no-check-sigs \
-    {} \
-    --to 's3://playing-bucket-nix-cache-test'
 ```
 
 
