@@ -39,7 +39,7 @@ NAME_SHELL=$(basename $SHELL) \
 && . "$HOME"/.profile
 ```
 
-Crie um arquivo e copie e cole o bloco de código acima.
+Crie um arquivo e copie e cole o bloco de código acima no arquivo.
 ```bash
 vi arquivo.txt
 ```
@@ -50,8 +50,9 @@ cat arquivo.txt | curl -F 'f:1=<-' ix.io
 ```
 
 
-Existem 3 tipos de configurações, descritos nas próximas seções.
-
+Existem 3 tipos de configurações, descritos nas próximas seções: apenas CLI, apenas CLI slim, e com 
+programas com interface gráfica.
+ 
 1.1) Apenas programas CLI:
 
 ```bash

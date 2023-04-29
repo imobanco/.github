@@ -411,8 +411,66 @@
     )
 
     (
+      writeScriptBin "create-nix-hardcoded-sign-cache-keys" ''
+
+        CACHE_KEYS_FULL_PATH="$HOME"/.nix-sing-cache-keys
+        mkdir -m 0700 -pv "$CACHE_KEYS_FULL_PATH"
+
+        cat > "$CACHE_KEYS_FULL_PATH"/cache-pub-key.pem << 'EOF'
+        binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg=
+        EOF
+
+        cat > "$CACHE_KEYS_FULL_PATH"/cache-priv-key.pem << 'EOF'
+        binarycache-1:LS3ApFX0izjIwKCDJFquhuF2+ENxhAv0jdF838AyhUVeI8dL9dP/OIwe7mEahDxnQrzyxrUSqLmQVNjKXfcUmA==
+        EOF
+
+        chown -v $USER "$CACHE_KEYS_FULL_PATH"/cache-priv-key.pem \
+        && chmod 0600 -v "$CACHE_KEYS_FULL_PATH"/cache-priv-key.pem
+      ''
+    )
+
+    (
       writeScriptBin "nr" ''
         nix repl --expr 'import <nixpkgs> {}'
+      ''
+    )
+
+    (
+      writeScriptBin "script-post-build-hook" ''
+        set -euf
+
+        echo "post-build-hook"
+        echo "-- ''${OUT_PATHS} --"
+        echo "^^ ''${DRV_PATH} ^^"
+
+        # set -x
+
+        KEY_FILE=cache-priv-key.pem
+        # Testar ?region=eu-west-1
+        CACHE=s3://playing-bucket-nix-cache-test/
+
+        # mapfile -t DERIVATIONS < <(echo "''${OUT_PATHS[@]}" | xargs nix path-info --derivation)
+        # mapfile -t DERIVATIONS < <(echo "''${OUT_PATHS[@]}" | xargs nix path-info)
+        # mapfile -t DEPENDENCIES < <(echo "''${DRV_PATH[@]}" | xargs nix-store --query --requisites --include-outputs --force-realise)
+
+        # Only runtime for now
+        mapfile -t DEPENDENCIES < <(echo "''${OUT_PATHS[@]}" | xargs nix path-info --recursive)
+
+        # TODO: é o correto assinar as derivações, os .drv?
+        # echo "''${DERIVATIONS[@]}" | xargs nix store sign --key-file "$KEY_FILE" --recursive
+
+        # TODO:
+        echo "''${DEPENDENCIES[@]}" | xargs nix store sign --key-file "$KEY_FILE" --recursive
+
+        # echo "''${DEPENDENCIES[@]}" | xargs nix copy --eval-store auto --no-check-sigs -vvv --to "$CACHE"
+        echo "''${DEPENDENCIES[@]}" | xargs nix copy -vvv --to "$CACHE"
+
+      ''
+    )
+
+    (
+      writeScriptBin "e-script-post-build-hook" ''
+        erw script-post-build-hook
       ''
     )
   ];
