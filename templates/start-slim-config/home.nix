@@ -169,7 +169,7 @@
         writeScriptBin "self-send-to-bucket" ''
          #! ${pkgs.runtimeShell} -e
          send-signed-closure-run-time-of-flake-attr-to-bucket \
-         ~/.config/nixpkgs#homeConfigurations."$(id -un)"-"$(hostname)".activationPackage
+         ~/.config/nixpkgs#homeConfigurations.'"'"$(id -un)"-"$(hostname)"'"'.activationPackage
        ''
       )
 
