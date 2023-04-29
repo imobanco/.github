@@ -140,7 +140,7 @@
       )
 
       (
-        writeScriptBin "send-closure-run-time-of-flake-attr-to-bucket" ''
+        writeScriptBin "send-signed-closure-run-time-of-flake-attr-to-bucket" ''
          #! ${pkgs.runtimeShell} -e
 
             export NIXPKGS_ALLOW_UNFREE=1
@@ -152,6 +152,9 @@
             | wc -l
 
             nix path-info --impure --recursive "$FLAKE_EXPR" \
+            | xargs nix store sign --key-file "$HOME"/.nix-sing-cache-keys/cache-priv-key.pem --recursive
+
+            nix path-info --impure --recursive "$FLAKE_EXPR" \
             | xargs -I{} nix \
                 copy \
                 --max-jobs $(nproc) \
@@ -159,6 +162,14 @@
                 --no-check-sigs \
                 {} \
                 --to 's3://playing-bucket-nix-cache-test'
+       ''
+      )
+
+      (
+        writeScriptBin "self-send-to-bucket" ''
+         #! ${pkgs.runtimeShell} -e
+         send-signed-closure-run-time-of-flake-attr-to-bucket \
+         ~/.config/nixpkgs#homeConfigurations."$(id -un)"-"$(hostname)".activationPackage
        ''
       )
 
