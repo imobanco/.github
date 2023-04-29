@@ -13,7 +13,7 @@
 
     # Just enabling it is ok, and might be better
     # nix
-    nixVersions.nix_2_10
+    # nixVersions.nix_2_10
 
     # pciutils # lspci and others
     # coreboot-utils
