@@ -51,6 +51,8 @@
 #    hydra-check
 #    nixos-option
 #    shellcheck
+     nano
+     vim
 
     # fontconfig
     # fontforge-gtk # TODO: testar fontes usando esse programa
@@ -279,6 +281,26 @@
             --print-build-logs \
             --print-out-paths \
             ~/.config/nixpkgs#homeConfigurations."$(id -un)"-"$(hostname)".activationPackage
+        ''
+      )
+
+      (
+        writeScriptBin "build-and-send-to-cache" ''
+         #! ${pkgs.runtimeShell} -e
+
+            set -x
+
+            export NIXPKGS_ALLOW_UNFREE=1
+
+            nix \
+            build \
+            --impure \
+            --keep-failed \
+            --no-link \
+            --print-build-logs \
+            --print-out-paths \
+            ~/.config/nixpkgs#homeConfigurations."$(id -un)"-"$(hostname)".activationPackage \
+            --post-build-hook e-script-post-build-hook
         ''
       )
 
