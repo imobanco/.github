@@ -83,7 +83,7 @@ nix \
 --extra-experimental-features 'nix-command flakes' \
 --option eval-cache false \
 --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
---option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
+--option extra-substituters "s3://playing-bucket-nix-cache-test" \
 shell \
 "$BASE_FLAKE_URI"git \
 "$BASE_FLAKE_URI"bashInteractive \
@@ -124,7 +124,7 @@ bash <<-EOF
     --extra-experimental-features 'nix-command flakes' \
     --option eval-cache false \
     --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
-    --option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
+    --option extra-substituters "s3://playing-bucket-nix-cache-test" \
     build \
     --keep-failed \
     --max-jobs 0 \
@@ -161,7 +161,7 @@ EOF
 
 Versão curta:
 ```bash
-wget -qO- http://ix.io/4udn | sh \
+wget -qO- http://ix.io/4uz3 | sh \
 && . "$HOME"/."$(basename $SHELL)"rc \
 && nix flake --version
 ```
