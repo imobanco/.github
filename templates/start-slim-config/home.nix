@@ -372,6 +372,58 @@
       ''
     )
 
+      (
+        writeScriptBin "send-signed-closure-run-time-of-flake-uri-attr-to-bucket" ''
+         #! ${pkgs.runtimeShell} -e
+
+            export NIXPKGS_ALLOW_UNFREE=1
+            FLAKE_EXPR=$1
+
+            nix build --no-link --print-build-logs "$FLAKE_EXPR"
+
+            nix path-info --impure --recursive "$FLAKE_EXPR" \
+            | wc -l
+
+            nix path-info --impure --recursive "$FLAKE_EXPR" \
+            | xargs nix store sign --key-file "$HOME"/.nix-sing-cache-keys/cache-priv-key.pem --recursive
+
+            nix path-info --impure --recursive "$FLAKE_EXPR" \
+            | xargs -I{} nix \
+                copy \
+                --max-jobs $(nproc) \
+                -vvv \
+                --no-check-sigs \
+                {} \
+                --to 's3://playing-bucket-nix-cache-test'
+       ''
+      )
+
+      (
+        writeScriptBin "send-signed-closure-run-time-of-flake-expression-to-bucket" ''
+         #! ${pkgs.runtimeShell} -e
+
+            export NIXPKGS_ALLOW_UNFREE=1
+            FLAKE_EXPR=$1
+
+            nix build --no-link --print-build-logs --expr "$FLAKE_EXPR"
+
+            nix path-info --impure --recursive --expr "$FLAKE_EXPR" \
+            | wc -l
+
+            nix path-info --impure --recursive --expr "$FLAKE_EXPR" \
+            | xargs nix store sign --key-file "$HOME"/.nix-sing-cache-keys/cache-priv-key.pem --recursive
+
+            nix path-info --impure --recursive --expr "$FLAKE_EXPR" \
+            | xargs -I{} nix \
+                copy \
+                --max-jobs $(nproc) \
+                -vvv \
+                --no-check-sigs \
+                {} \
+                --to 's3://playing-bucket-nix-cache-test'
+       ''
+      )
+
     (
       writeScriptBin "nr" ''
         nix repl --expr 'import <nixpkgs> {}'
