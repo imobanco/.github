@@ -109,11 +109,11 @@
               autoSubUidGidRange = true;
 
               openssh.authorizedKeys.keyFiles = [
-                "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKyhLx5HU63zJJ5Lx4j+NTC/OQZ7Weloc8y+On467kly"
+                "${ ./nixuser-keys.pub }"
               ];
 
               openssh.authorizedKeys.keys = [
-                   "${ ./nixuser-keys.pub }"
+                 "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKyhLx5HU63zJJ5Lx4j+NTC/OQZ7Weloc8y+On467kly"
               ];
             };
 

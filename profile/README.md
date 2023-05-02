@@ -724,7 +724,7 @@ build \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-github:PedroRegisPOAR/.github/991bde1c67c86bc382601c01b2cb7dd6754c953e#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64Linux.config.system.build.vm
+github:PedroRegisPOAR/.github/d240e5ae0449c9802b0590193c0ed024f6c14ba6#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64Linux.config.system.build.vm
 ```
 
 
