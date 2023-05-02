@@ -703,6 +703,7 @@ build \
 "$EXPR_NIX"
 ```
 
+
 #### x86_64-linux
 
 
@@ -724,11 +725,81 @@ build \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-github:PedroRegisPOAR/.github/d240e5ae0449c9802b0590193c0ed024f6c14ba6#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64Linux.config.system.build.vm
+github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64Linux.config.system.build.vm
+
+send-signed-closure-run-time-of-flake-uri-attr-to-bucket \
+github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64Linux.config.system.build.vm
+```
+
+
+```bash
+time \
+nix \
+--option eval-cache false \
+--option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
+--option extra-substituters "s3://playing-bucket-nix-cache-test" \
+build \
+--keep-failed \
+--max-jobs 0 \
+--no-link \
+--no-show-trace \
+--print-build-logs \
+--print-out-paths \
+github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64Linux.config.system.build.vm
+```
+
+
+```bash
+mkdir -pv ~/sandbox/sandbox && cd $_
+
+export HOST_MAPPED_PORT=10022
+export REMOVE_DISK=true
+export QEMU_NET_OPTS='hostfwd=tcp::10022-:10022,hostfwd=tcp:127.0.0.1:8000-:8000'
+export QEMU_OPTS='-nographic'
+export SHARED_DIR="$(pwd)"
+
+"$REMOVE_DISK" && rm -fv nixos.qcow2
+# nc 1>/dev/null 2>/dev/null || nix profile install nixpkgs#netcat
+# nc -v -4 localhost "$HOST_MAPPED_PORT" -w 1 -z && echo 'There is something already using the port:'"$HOST_MAPPED_PORT"
+
+# sudo lsof -t -i tcp:10022 -s tcp:listen
+# sudo lsof -t -i tcp:10022 -s tcp:listen | sudo xargs --no-run-if-empty kill
+
+cat << 'EOF' >> id_ed25519
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+QyNTUxOQAAACCsoS8eR1Ot8ySeS8eI/jUwvzkGe1npaHPMvjp+Ou5JcgAAAIjoIwah6CMG
+oQAAAAtzc2gtZWQyNTUxOQAAACCsoS8eR1Ot8ySeS8eI/jUwvzkGe1npaHPMvjp+Ou5Jcg
+AAAEAbL0Z61S8giktfR53dZ2fztctV/0vML24doU0BMGLRZqyhLx5HU63zJJ5Lx4j+NTC/
+OQZ7Weloc8y+On467klyAAAAAAECAwQF
+-----END OPENSSH PRIVATE KEY-----
+EOF
+
+chmod -v 0600 id_ed25519
+
+
+result/bin/run-nixos-vm < /dev/null &
+
+
+while ! ssh -i id_ed25519 -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p 10022 <<<'nix flake metadata nixpkgs'; do \
+  echo $(date +'%d/%m/%Y %H:%M:%S:%3N'); sleep 0.5; done \
+&& ssh-keygen -R '[localhost]:10022'; \
+ssh \
+-i id_ed25519 \
+-X \
+-o StrictHostKeyChecking=no \
+nixuser@localhost \
+-p 10022
+#<<COMMANDS
+#id
+#COMMANDS
+#"$REMOVE_DISK" && rm -fv nixos.qcow2 id_ed25519
 ```
 
 
 #### aarch64-linux
+
+
 ```bash
 nix \
 build \
