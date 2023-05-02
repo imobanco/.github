@@ -703,7 +703,32 @@ build \
 "$EXPR_NIX"
 ```
 
+#### x86_64-linux
 
+
+
+```bash
+nix \
+build \
+--max-jobs auto \
+--no-link \
+--no-show-trace \
+--print-build-logs \
+#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64Linux.config.system.build.vm
+```
+
+```bash
+nix \
+build \
+--max-jobs auto \
+--no-link \
+--no-show-trace \
+--print-build-logs \
+github:PedroRegisPOAR/.github/991bde1c67c86bc382601c01b2cb7dd6754c953e#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64Linux.config.system.build.vm
+```
+
+
+#### aarch64-linux
 ```bash
 nix \
 build \
