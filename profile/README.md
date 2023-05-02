@@ -702,3 +702,6 @@ build \
 --expr \
 "$EXPR_NIX"
 ```
+
+
+.#nixosConfigurations.x86_64-linux.nixosBuildVMAarch64Linux.config.system.build.vm
