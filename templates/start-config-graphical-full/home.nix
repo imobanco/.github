@@ -422,6 +422,8 @@
       npi = "nix profile install nixpkgs#";
       ns = "nix shell";
       # nr = "nix repl --expr 'import <nixpkgs> {}'";
+
+      rmall = "rm -frv {*,.*}";
     };
 
     # > closed and reopened the terminal. Then it worked.

@@ -704,4 +704,31 @@ build \
 ```
 
 
-.#nixosConfigurations.x86_64-linux.nixosBuildVMAarch64Linux.config.system.build.vm
+```bash
+nix \
+build \
+--max-jobs auto \
+--no-link \
+--no-show-trace \
+--print-build-logs \
+github:PedroRegisPOAR/.github/16ff125da97da1e8ee918f3a29b06652dc521278#nixosConfigurations.x86_64-linux.nixosBuildVMAarch64Linux.config.system.build.vm
+```
+
+
+
+```bash
+time \
+nix \
+--option eval-cache false \
+--option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
+--option extra-substituters "s3://playing-bucket-nix-cache-test" \
+build \
+--keep-failed \
+--max-jobs 0 \
+--no-link \
+--no-show-trace \
+--print-build-logs \
+--print-out-paths \
+--system aarch64-linux \
+github:PedroRegisPOAR/.github/16ff125da97da1e8ee918f3a29b06652dc521278#nixosConfigurations.x86_64-linux.nixosBuildVMAarch64Linux.config.system.build.vm
+```
