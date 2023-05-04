@@ -835,10 +835,10 @@ build \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-github:PedroRegisPOAR/.github/7aaeae4049072d178753779ffd040b7858132614#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+github:PedroRegisPOAR/.github/41681e1916f1c3a1715cc6084e72abf609029794#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 
 send-signed-closure-run-time-of-flake-uri-attr-to-bucket \
-github:PedroRegisPOAR/.github/7aaeae4049072d178753779ffd040b7858132614#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+github:PedroRegisPOAR/.github/41681e1916f1c3a1715cc6084e72abf609029794#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 ```
 
 
@@ -855,7 +855,7 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/7aaeae4049072d178753779ffd040b7858132614#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+github:PedroRegisPOAR/.github/41681e1916f1c3a1715cc6084e72abf609029794#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 ```
 
 
@@ -864,7 +864,7 @@ mkdir -pv ~/sandbox/sandbox && cd $_
 
 export HOST_MAPPED_PORT=10022
 export REMOVE_DISK=true
-export QEMU_NET_OPTS='hostfwd=tcp::10022-:10022,hostfwd=tcp:127.0.0.1:8000-:8000'
+export QEMU_NET_OPTS='hostfwd=tcp::10022-:10022,hostfwd=tcp::8000-:8000'
 export QEMU_OPTS='-nographic'
 export SHARED_DIR="$(pwd)"
 
@@ -888,22 +888,22 @@ EOF
 chmod -v 0600 id_ed25519
 
 
-nix \
---option eval-cache false \
---option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
---option extra-substituters "s3://playing-bucket-nix-cache-test" \
-build \
---keep-failed \
---max-jobs 0 \
---no-link \
---no-show-trace \
---print-build-logs \
---print-out-paths \
-github:PedroRegisPOAR/.github/7aaeae4049072d178753779ffd040b7858132614#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+#nix \
+#--option eval-cache false \
+#--option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
+#--option extra-substituters "s3://playing-bucket-nix-cache-test" \
+#build \
+#--keep-failed \
+#--max-jobs 0 \
+#--no-link \
+#--no-show-trace \
+#--print-build-logs \
+#--print-out-paths \
+#github:PedroRegisPOAR/.github/41681e1916f1c3a1715cc6084e72abf609029794#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 
 nix \
 run \
-github:PedroRegisPOAR/.github/7aaeae4049072d178753779ffd040b7858132614#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm \
+github:PedroRegisPOAR/.github/41681e1916f1c3a1715cc6084e72abf609029794#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm \
 < /dev/null &
 
 
@@ -943,7 +943,7 @@ nix run nixpkgs#python3 -- -m http.server 8000
 
 In the host (client machine):
 ```bash
-test $(curl -s -w '%{http_code}\n' localhost:9000 -o /dev/null) -eq 200 || echo 'Error'
+test $(curl -s -w '%{http_code}\n' localhost:8000 -o /dev/null) -eq 200 || echo 'Error'
 ```
 
 
