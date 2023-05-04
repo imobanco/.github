@@ -835,10 +835,10 @@ build \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-github:PedroRegisPOAR/.github/41681e1916f1c3a1715cc6084e72abf609029794#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+github:PedroRegisPOAR/.github/b7e5192444b0af958ba1fc8772d6c4a101bab92a#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 
 send-signed-closure-run-time-of-flake-uri-attr-to-bucket \
-github:PedroRegisPOAR/.github/41681e1916f1c3a1715cc6084e72abf609029794#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+github:PedroRegisPOAR/.github/b7e5192444b0af958ba1fc8772d6c4a101bab92a#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 ```
 
 
@@ -855,7 +855,7 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/41681e1916f1c3a1715cc6084e72abf609029794#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+github:PedroRegisPOAR/.github/b7e5192444b0af958ba1fc8772d6c4a101bab92a#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 ```
 
 
@@ -864,16 +864,19 @@ mkdir -pv ~/sandbox/sandbox && cd $_
 
 export HOST_MAPPED_PORT=10022
 export REMOVE_DISK=true
-export QEMU_NET_OPTS='hostfwd=tcp::10022-:10022,hostfwd=tcp::8000-:8000'
+export QEMU_NET_OPTS='hostfwd=tcp::'"$HOST_MAPPED_PORT"'-:'"$HOST_MAPPED_PORT"',hostfwd=tcp::8000-:8000'
 export QEMU_OPTS='-nographic'
 export SHARED_DIR="$(pwd)"
 
+
+pgrep qemu | xargs kill 
 "$REMOVE_DISK" && rm -fv nixos.qcow2
+
 # nc 1>/dev/null 2>/dev/null || nix profile install nixpkgs#netcat
 # nc -v -4 localhost "$HOST_MAPPED_PORT" -w 1 -z && echo 'There is something already using the port:'"$HOST_MAPPED_PORT"
 
-# sudo lsof -t -i tcp:10022 -s tcp:listen
-# sudo lsof -t -i tcp:10022 -s tcp:listen | sudo xargs --no-run-if-empty kill
+# sudo lsof -t -i tcp:"$HOST_MAPPED_PORT" -s tcp:listen
+# sudo lsof -t -i tcp:"$HOST_MAPPED_PORT" -s tcp:listen | sudo xargs --no-run-if-empty kill
 
 cat << 'EOF' >> id_ed25519
 -----BEGIN OPENSSH PRIVATE KEY-----
@@ -899,23 +902,24 @@ chmod -v 0600 id_ed25519
 #--no-show-trace \
 #--print-build-logs \
 #--print-out-paths \
-#github:PedroRegisPOAR/.github/41681e1916f1c3a1715cc6084e72abf609029794#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+#github:PedroRegisPOAR/.github/b7e5192444b0af958ba1fc8772d6c4a101bab92a#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 
 nix \
 run \
-github:PedroRegisPOAR/.github/41681e1916f1c3a1715cc6084e72abf609029794#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm \
+github:PedroRegisPOAR/.github/b7e5192444b0af958ba1fc8772d6c4a101bab92a#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm \
 < /dev/null &
 
 
-while ! ssh -i id_ed25519 -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p 10022 <<<'nix flake metadata nixpkgs'; do \
+while ! ssh -i id_ed25519 -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'nix flake metadata nixpkgs'; do \
   echo $(date +'%d/%m/%Y %H:%M:%S:%3N'); sleep 0.5; done \
-&& ssh-keygen -R '[localhost]:10022'; \
+&& ssh-keygen -R '[localhost]:'"$HOST_MAPPED_PORT"''; \
 ssh \
 -i id_ed25519 \
 -X \
+-o ConnectTimeout=1 \
 -o StrictHostKeyChecking=no \
 nixuser@localhost \
--p 10022
+-p "$HOST_MAPPED_PORT"
 
 #<<COMMANDS
 #id
