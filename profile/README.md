@@ -777,6 +777,8 @@ EOF
 
 chmod -v 0600 id_ed25519
 
+# Oh crap, it made me wast many many days
+ssh-add id_ed25519
 
 #nix \
 #--option eval-cache false \
@@ -822,6 +824,7 @@ Refs.:
 - 
 
 
+
 Broken:
 ```bash
 ssh \
@@ -831,10 +834,13 @@ ssh \
 ssh://nixuser@localhost:10022 \
 -o StreamLocalBindUnlink=yes
 
+export CONTAINER_HOST=unix://tmp/podman.sock
+
 podman run -it --rm docker.io/library/alpine sh -c 'cat /etc/os-*release'
 ```
 Refs.:
 - https://github.com/containers/podman/issues/11397#issuecomment-1321090051
+
 
 ```bash
 sudo netstat -nptl
