@@ -25,7 +25,7 @@
 
         templates = import ./templates;
 
-        nixosConfigurations.nixosBuildVMX86_64Linux = let
+        nixosConfigurations.nixosBuildVMX86_64LinuxPodman = let
             pkgs = import nixpkgs {
               system = "x86_64-linux";
               config = { allowUnfree = true; };
@@ -84,7 +84,7 @@
               description = "The VM tester user";
               group = "nixgroup";
               extraGroups = [
-                              "docker"
+                              "podman"
                               "kvm"
                               "libvirtd"
                               "wheel"
@@ -195,10 +195,10 @@
 
               # https://stackoverflow.com/a/71247061
               # https://nixos.wiki/wiki/Firewall
-              # networking.firewall = {
-              #   enable = true;
-              #   allowedTCPPorts = [ 22 80 443 10022 8000 ];
-              # };
+              networking.firewall = {
+                enable = true;
+                allowedTCPPorts = [ 22 80 443 10022 8000 ];
+              };
 
               programs.ssh.forwardX11 = true;
               services.qemuGuest.enable = true;

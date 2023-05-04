@@ -725,10 +725,10 @@ build \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/fe92d991ab7f32a6d3589a33a1b473d5f61fa9c9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 send-signed-closure-run-time-of-flake-uri-attr-to-bucket \
-github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/fe92d991ab7f32a6d3589a33a1b473d5f61fa9c9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 ```
 
 
@@ -745,7 +745,7 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/fe92d991ab7f32a6d3589a33a1b473d5f61fa9c9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 ```
 
 
@@ -778,22 +778,22 @@ EOF
 chmod -v 0600 id_ed25519
 
 
-nix \
---option eval-cache false \
---option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
---option extra-substituters "s3://playing-bucket-nix-cache-test" \
-build \
---keep-failed \
---max-jobs 0 \
---no-link \
---no-show-trace \
---print-build-logs \
---print-out-paths \
-github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+#nix \
+#--option eval-cache false \
+#--option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
+#--option extra-substituters "s3://playing-bucket-nix-cache-test" \
+#build \
+#--keep-failed \
+#--max-jobs 0 \
+#--no-link \
+#--no-show-trace \
+#--print-build-logs \
+#--print-out-paths \
+#github:PedroRegisPOAR/.github/fe92d991ab7f32a6d3589a33a1b473d5f61fa9c9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 nix \
 run \
-github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
+github:PedroRegisPOAR/.github/fe92d991ab7f32a6d3589a33a1b473d5f61fa9c9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
 < /dev/null &
 
 
