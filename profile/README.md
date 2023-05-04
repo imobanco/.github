@@ -835,10 +835,10 @@ build \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+github:PedroRegisPOAR/.github/a3e3cc3ae6654f88a90562ac9694d6d7819512fc#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 
 send-signed-closure-run-time-of-flake-uri-attr-to-bucket \
-github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+github:PedroRegisPOAR/.github/a3e3cc3ae6654f88a90562ac9694d6d7819512fc#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 ```
 
 
@@ -855,7 +855,7 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+github:PedroRegisPOAR/.github/a3e3cc3ae6654f88a90562ac9694d6d7819512fc#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 ```
 
 
@@ -899,11 +899,11 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
+github:PedroRegisPOAR/.github/a3e3cc3ae6654f88a90562ac9694d6d7819512fc#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm
 
 nix \
 run \
-github:PedroRegisPOAR/.github/5ef51c7cc275a4298c8870e73dddf40ca39aa04c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm \
+github:PedroRegisPOAR/.github/a3e3cc3ae6654f88a90562ac9694d6d7819512fc#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxDocker.config.system.build.vm \
 < /dev/null &
 
 
@@ -923,6 +923,35 @@ nixuser@localhost \
 #"$REMOVE_DISK" && rm -fv nixos.qcow2 id_ed25519
 ```
 
+
+```bash
+export DOCKER_HOST=ssh://nixuser@localhost:10022
+
+docker run -it --rm docker.io/library/alpine sh -c 'cat /etc/os-*release'
+```
+Refs.:
+- https://dev.to/jillesvangurp/docker-over-qemu-on-a-mac-1ajp
+
+
+```bash
+ssh -L 8000:localhost:8000 -p 10022 nixuser@localhost
+```
+
+```bash
+nix run nixpkgs#python3 -- -m http.server 8000
+```
+
+In the host (client machine):
+```bash
+test $(curl -s -w '%{http_code}\n' localhost:9000 -o /dev/null) -eq 200 || echo 'Error'
+```
+
+
+```bash
+podman --remote --identity id_ed25519 --url ssh://nixuser@localhost:10022 images
+```
+Refs.:
+- https://stackoverflow.com/a/74634171
 
 
 #### aarch64-linux
@@ -1018,23 +1047,3 @@ tr '\0' '\n' < /proc/${PID}/cmdline
 strace -f -T -y -e trace=file
 ```
 
-
-```bash
-export DOCKER_HOST=ssh://nixuser@localhost:10022
-
-docker run -p8080:80 nginx
-
-
-ssh -L 8080:localhost:8080 -p 10022 nixuser@localhost
-```
-Refs.:
-- https://dev.to/jillesvangurp/docker-over-qemu-on-a-mac-1ajp
-
-
-
-
-```bash
-podman --remote --identity id_ed25519 --url ssh://nixuser@localhost:10022 images
-```
-Refs.:
-- https://stackoverflow.com/a/74634171
