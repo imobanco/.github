@@ -725,10 +725,10 @@ build \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-github:PedroRegisPOAR/.github/fe92d991ab7f32a6d3589a33a1b473d5f61fa9c9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/6687778e4f350b968804a3f019248794409e979d#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 send-signed-closure-run-time-of-flake-uri-attr-to-bucket \
-github:PedroRegisPOAR/.github/fe92d991ab7f32a6d3589a33a1b473d5f61fa9c9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/6687778e4f350b968804a3f019248794409e979d#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 ```
 
 
@@ -745,7 +745,7 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/fe92d991ab7f32a6d3589a33a1b473d5f61fa9c9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/6687778e4f350b968804a3f019248794409e979d#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 ```
 
 
@@ -793,7 +793,7 @@ chmod -v 0600 id_ed25519
 
 nix \
 run \
-github:PedroRegisPOAR/.github/fe92d991ab7f32a6d3589a33a1b473d5f61fa9c9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
+github:PedroRegisPOAR/.github/6687778e4f350b968804a3f019248794409e979d#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
 < /dev/null &
 
 
@@ -812,6 +812,54 @@ nixuser@localhost \
 #COMMANDS
 #"$REMOVE_DISK" && rm -fv nixos.qcow2 id_ed25519
 ```
+
+```bash
+export CONTAINER_HOST=ssh://nixuser@localhost:10022/run/user/1234/podman/podman.sock
+
+podman run -it --rm docker.io/library/alpine sh -c 'cat /etc/os-*release'
+```
+Refs.:
+- 
+
+
+Broken:
+```bash
+ssh \
+-fnNT \
+-L/tmp/podman.sock:/run/user/1234/podman/podman.sock \
+-i id_ed25519 \
+ssh://nixuser@localhost:10022 \
+-o StreamLocalBindUnlink=yes
+
+podman run -it --rm docker.io/library/alpine sh -c 'cat /etc/os-*release'
+```
+Refs.:
+- https://github.com/containers/podman/issues/11397#issuecomment-1321090051
+
+```bash
+sudo netstat -nptl
+```
+Refs.:
+- https://serverfault.com/a/1083002
+
+
+##### podman system connection add
+
+```bash
+export DOCKER_HOST = "ssh://root@podman-romote-host"
+podman system connection add --identity ~/.ssh/id_rsa production $DOCKER_HOST
+podman run hello-world
+```
+Refs.:
+- https://stackoverflow.com/a/75533656
+- https://github.com/containers/podman/issues/11668#issuecomment-947983711
+
+
+```bash
+podman --remote --identity id_ed25519 --url ssh://nixuser@localhost:10022 images
+```
+Refs.:
+- https://stackoverflow.com/a/74634171
 
 
 #### x86_64-linux with docker
@@ -951,11 +999,6 @@ test $(curl -s -w '%{http_code}\n' localhost:8000 -o /dev/null) -eq 200 || echo 
 ```
 
 
-```bash
-podman --remote --identity id_ed25519 --url ssh://nixuser@localhost:10022 images
-```
-Refs.:
-- https://stackoverflow.com/a/74634171
 
 
 #### aarch64-linux
