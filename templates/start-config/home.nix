@@ -253,7 +253,7 @@
     openssh
     # sshfs # TODO: testar
 
-    # #podman
+    podman
     # runc
     # skopeo
     # conmon

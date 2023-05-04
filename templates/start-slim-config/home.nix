@@ -111,6 +111,8 @@
     openssh
     awscli
 
+    podman
+
       (
         writeScriptBin "ix" ''
          #! ${pkgs.runtimeShell} -e
