@@ -13,15 +13,20 @@ wget -qO- http://ix.io/4tTQ | sh \
 && . "$HOME"/."$(basename $SHELL)"rc \
 && nix flake --version
 ```
+4vmd
+
 
 Versão longa:
 ```bash
 command -v curl || (command -v apt && sudo apt-get update && sudo apt-get install -y curl)
 command -v curl || (command -v apk && sudo apk add --no-cache curl)
 
+# DAEMON_OR_NO_DAEMON='--'"$((lauchctl --version 1>/dev/null 2>/dev/null || systemctl --version 1>/dev/null 2>/dev/null) && echo daemon || echo no-daemon)"
+DAEMON_OR_NO_DAEMON='--'"$($(lauchctl --version 1>/dev/null 2>/dev/null) && echo daemon || echo no-daemon)"
+
 
 NIX_RELEASE_VERSION=2.10.2 \
-&& curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s -- --no-daemon \
+&& curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s -- "$DAEMON_OR_NO_DAEMON" \
 && . "$HOME"/.nix-profile/etc/profile.d/nix.sh
 
 NAME_SHELL=$(basename $SHELL) \
@@ -41,7 +46,7 @@ NAME_SHELL=$(basename $SHELL) \
 
 Crie um arquivo e copie e cole o bloco de código acima no arquivo.
 ```bash
-vi arquivo.txt
+nano arquivo.txt
 ```
 
 Após salvar:
@@ -715,7 +720,7 @@ build \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+.#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 ```
 
 ```bash
@@ -725,10 +730,10 @@ build \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-github:PedroRegisPOAR/.github/6687778e4f350b968804a3f019248794409e979d#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 send-signed-closure-run-time-of-flake-uri-attr-to-bucket \
-github:PedroRegisPOAR/.github/6687778e4f350b968804a3f019248794409e979d#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 ```
 
 
@@ -745,7 +750,7 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/6687778e4f350b968804a3f019248794409e979d#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 ```
 
 
@@ -795,7 +800,7 @@ ssh-add id_ed25519
 
 nix \
 run \
-github:PedroRegisPOAR/.github/6687778e4f350b968804a3f019248794409e979d#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
+github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
 < /dev/null &
 
 
