@@ -675,6 +675,11 @@
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
+    settings = {
+        # "$schema" = "https://starship.rs/config-schema.json";
+        # add_newline = true;
+        command_timeout = 50000; # TODO: qual a unidade?
+    };
   };
 
   # https://nix-community.github.io/home-manager/options.html#opt-programs.direnv.config
