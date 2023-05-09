@@ -139,7 +139,9 @@
                 virtualisation = {
                   # following configuration is added only when building VM with build-vm
                   memorySize = 3072; # Use MiB memory.
-                  diskSize = 4096; # Use MiB memory.
+
+                  # nixos-disk-image> ERROR: cptofs failed. diskSize might be too small for closure.
+                  diskSize = 15*1024; # Use MiB memory.
                   cores = 7; # Simulate 3 cores.
                   #
                   podman.enable = true;
