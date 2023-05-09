@@ -617,7 +617,7 @@
             ssh-add -l | grep -q 'SHA256:NzLgwADMD4taCNCdiTTRz0yyMdN0AguJVZD+eHiQZjE' || ssh-add ./ops/nix/id_ed25519
 
             ssh -T -i "$IDENTITY_FULL_PATH" -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket' \
-            || $("$RUN_BUID_VM_SCRIPT_PATH" &)
+            || "$RUN_BUID_VM_SCRIPT_PATH" < /dev/null &
 
             # TODO: pq o podman.service não está ativo?
             while ! ssh -T -i "$IDENTITY_FULL_PATH" -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket'; do \
