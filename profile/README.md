@@ -15,8 +15,9 @@ wget -qO- http://ix.io/4tTQ | sh \
 ```
 4vmd
 
+<details>
+  <summary>Versão longa (click para expandir):</summary>
 
-Versão longa:
 ```bash
 command -v curl || (command -v apt && sudo apt-get update && sudo apt-get install -y curl)
 command -v curl || (command -v apk && sudo apk add --no-cache curl)
@@ -53,7 +54,7 @@ Após salvar:
 ```bash
 cat arquivo.txt | curl -F 'f:1=<-' ix.io
 ```
-
+</details>
 
 Existem 3 tipos de configurações, descritos nas próximas seções: apenas CLI, apenas CLI slim, e com 
 programas com interface gráfica.
@@ -785,18 +786,18 @@ chmod -v 0600 id_ed25519
 # Oh crap, it made me wast many many days
 ssh-add id_ed25519
 
-#nix \
-#--option eval-cache false \
-#--option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
-#--option extra-substituters "s3://playing-bucket-nix-cache-test" \
-#build \
-#--keep-failed \
-#--max-jobs 0 \
-#--no-link \
-#--no-show-trace \
-#--print-build-logs \
-#--print-out-paths \
-#github:PedroRegisPOAR/.github/fe92d991ab7f32a6d3589a33a1b473d5f61fa9c9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+nix \
+--option eval-cache false \
+--option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
+--option extra-substituters "s3://playing-bucket-nix-cache-test" \
+build \
+--keep-failed \
+--max-jobs 0 \
+--no-link \
+--no-show-trace \
+--print-build-logs \
+--print-out-paths \
+github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 nix \
 run \
@@ -804,7 +805,7 @@ github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConf
 < /dev/null &
 
 
-while ! ssh -i id_ed25519 -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'nix flake metadata nixpkgs'; do \
+while ! ssh -T -i id_ed25519 -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket'; do \
   echo $(date +'%d/%m/%Y %H:%M:%S:%3N'); sleep 0.5; done \
 && ssh-keygen -R '[localhost]:'"$HOST_MAPPED_PORT"; \
 ssh \
