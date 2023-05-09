@@ -839,7 +839,7 @@ ssh \
 ssh://nixuser@localhost:10022 \
 -o StreamLocalBindUnlink=yes
 
-export CONTAINER_HOST=unix://tmp/podman.sock
+export CONTAINER_HOST=unix:///tmp/podman.sock
 
 podman run -it --rm docker.io/library/alpine sh -c 'cat /etc/os-*release'
 ```
