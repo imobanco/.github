@@ -5,15 +5,15 @@
 ## Template
 
 
-1)
+1) Instalação do nix single user.
 
 Versão curta:
 ```bash
-wget -qO- http://ix.io/4tTQ | sh \
+wget -qO- http://ix.io/4vmd | sh \
 && . "$HOME"/."$(basename $SHELL)"rc \
 && nix flake --version
 ```
-4vmd
+
 
 <details>
   <summary>Versão longa (click para expandir):</summary>
@@ -45,7 +45,7 @@ NAME_SHELL=$(basename $SHELL) \
 && . "$HOME"/.profile
 ```
 
-Crie um arquivo e copie e cole o bloco de código acima no arquivo.
+Para criar a versão curta, crie um arquivo e copie e cole o bloco de código acima no arquivo.
 ```bash
 nano arquivo.txt
 ```
@@ -54,7 +54,12 @@ Após salvar:
 ```bash
 cat arquivo.txt | curl -F 'f:1=<-' ix.io
 ```
+
+Basta atualizar a versão curta da instalação.
+
 </details>
+
+## Parte 2, home-manager + nix
 
 Existem 3 tipos de configurações, descritos nas próximas seções: apenas CLI, apenas CLI slim, e com 
 programas com interface gráfica.
@@ -599,19 +604,24 @@ https://github.com/imobanco/.config-nixpkgs
 
 ### Mac
 
+#### Instalando o homebrew
 
 ```bash
 NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/fc8acb0828f89f8aa83162000db1b49de71fa5d8/install.sh)" \
 && echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
 ```
 
-
-
+Instalando o `hello`:
 ```bash
 brew install hello
 ```
 
+Testando o `hello`
+```bash
+hello
+```
 
+Desistalando o `hello`:
 ```bash
 brew uninstall hello
 ```
@@ -624,7 +634,7 @@ NIX_RELEASE_VERSION=2.10.2 \
 && echo 'export NIX_CONFIG="extra-experimental-features = 'nix-command flakes'"' >> "$HOME"/.zprofile
 ```
 
-Feche o terminal.
+Feche o terminal, instalador obriga.
 
 Abra o terminal:
 ```bash
@@ -1105,4 +1115,3 @@ PID=?
 tr '\0' '\n' < /proc/${PID}/cmdline
 strace -f -T -y -e trace=file
 ```
-
