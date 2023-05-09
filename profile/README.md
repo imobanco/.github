@@ -1,6 +1,10 @@
 # Hi there 👋
 
-
+```bash
+git clone git@github.com:PedroRegisPOAR/.github.git \
+&& cd .github \
+&& ((direnv 1>/dev/null 2>/dev/null && direnv allow) || nix develop .#)
+```
 
 ## Template
 
@@ -741,10 +745,10 @@ build \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/c5ff24579ff2dfe933e517660ab218e8bacfe9e1#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 send-signed-closure-run-time-of-flake-uri-attr-to-bucket \
-github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/c5ff24579ff2dfe933e517660ab218e8bacfe9e1#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 ```
 
 
@@ -761,7 +765,7 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/c5ff24579ff2dfe933e517660ab218e8bacfe9e1#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 ```
 
 
@@ -793,6 +797,9 @@ EOF
 
 chmod -v 0600 id_ed25519
 
+
+
+ssh-keygen -R '[localhost]:10022'
 # Oh crap, it made me wast many many days
 ssh-add id_ed25519
 
@@ -807,11 +814,11 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/c5ff24579ff2dfe933e517660ab218e8bacfe9e1#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 nix \
 run \
-github:PedroRegisPOAR/.github/25b63fda6625c68d3b6ad206c45d516f0a7efda5#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
+github:PedroRegisPOAR/.github/c5ff24579ff2dfe933e517660ab218e8bacfe9e1#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
 < /dev/null &
 
 
@@ -830,6 +837,9 @@ nixuser@localhost \
 #COMMANDS
 #"$REMOVE_DISK" && rm -fv nixos.qcow2 id_ed25519
 ```
+Refs.:
+- https://stackoverflow.com/questions/20840012/ssh-remote-host-identification-has-changed#comment89964721_23150466
+
 
 ```bash
 export CONTAINER_HOST=ssh://nixuser@localhost:10022/run/user/1234/podman/podman.sock
@@ -839,6 +849,18 @@ podman run -it --rm docker.io/library/alpine sh -c 'cat /etc/os-*release'
 Refs.:
 - 
 
+
+```bash
+# make down
+ssh \
+-T \
+-i id_ed25519 \
+-X \
+-o StrictHostKeyChecking=no \
+root@localhost \
+-p "$HOST_MAPPED_PORT" \
+<<<'shutdown now'
+```
 
 
 Broken:
@@ -868,7 +890,7 @@ Refs.:
 ##### podman system connection add
 
 ```bash
-export DOCKER_HOST = "ssh://root@podman-romote-host"
+export DOCKER_HOST="ssh://root@podman-romote-host"
 podman system connection add --identity ~/.ssh/id_rsa production $DOCKER_HOST
 podman run hello-world
 ```

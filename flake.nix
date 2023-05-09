@@ -596,7 +596,33 @@
         ];
 
         shellHook = ''
-          echo -e 'IMO \n Banco' | "${pkgsAllowUnfree.figlet}/bin/figlet" | cat
+            echo -e 'IMO \n Banco' | "${pkgsAllowUnfree.figlet}/bin/figlet" | cat
+
+            export NIXOS_VM_USER=nixuser
+            export HOST_MAPPED_PORT=10022
+            export REMOVE_DISK=true
+            export QEMU_NET_OPTS=hostfwd=tcp::"$HOST_MAPPED_PORT"-:"$HOST_MAPPED_PORT",hostfwd=tcp::8000-:8000
+            # export QEMU_OPTS=-nographic
+            export QEMU_OPTS="-daemonize -display none -monitor none"
+            export SHARED_DIR="$(pwd)"
+            export RUN_BUID_VM_SCRIPT_PATH="${self.nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm}"/bin/run-nixos-vm
+            export CONTAINER_HOST=ssh://"$NIXOS_VM_USER"@localhost:"$HOST_MAPPED_PORT"/run/user/1234/podman/podman.sock
+
+            "$REMOVE_DISK" && rm -fv nixos.qcow2
+
+            # chmod 0600 .id_ed25519
+            IDENTITY_FULL_PATH=./id_ed25519
+
+            ssh-keygen -R '[localhost]:10022'
+            ssh-add -l | grep -q 'SHA256:NzLgwADMD4taCNCdiTTRz0yyMdN0AguJVZD+eHiQZjE' || ssh-add ./ops/nix/id_ed25519
+
+            ssh -T -i "$IDENTITY_FULL_PATH" -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket' \
+            || $("$RUN_BUID_VM_SCRIPT_PATH" &)
+
+            # TODO: pq o podman.service não está ativo?
+            while ! ssh -T -i "$IDENTITY_FULL_PATH" -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket'; do \
+              echo $(date +'%d/%m/%Y %H:%M:%S:%3N'); sleep 0.5; done
+
         '';
       };
     });
