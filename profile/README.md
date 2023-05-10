@@ -738,14 +738,75 @@ build \
 .#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 ```
 
+
 ```bash
+nix \
+develop \
+.# \
+-c \
+"$SHELL" \
+-c \
+'"$RUN_BUID_VM_SCRIPT_PATH"'
+
+nix \
+develop \
+.# \
+-c \
+"$SHELL" \
+<<'COMMANDS'
+while ! ssh -T -i id_ed25519 -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket'; do \
+  echo $(date +'%d/%m/%Y %H:%M:%S:%3N'); sleep 0.5; done
+COMMANDS
+
+nix \
+develop \
+.# \
+-c \
+"$SHELL" \
+-c \
+'podman run -it --rm docker.io/library/alpine sh -c "cat /etc/os-*release"'
+```
+
+```bash
+# TODO: the nix static
+# ls -al "$HOME"/.local/share/nix/root/$(nix eval --raw github:PedroRegisPOAR/.github/c5ff24579ff2dfe933e517660ab218e8bacfe9e1#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm)
+
+nix \
+develop \
+github:PedroRegisPOAR/.github/987db9a0aee4728509ad6fb4d175b0350511900c \
+-c \
+"$SHELL" \
+-c \
+'"$RUN_BUID_VM_SCRIPT_PATH"'
+
+nix \
+develop \
+github:PedroRegisPOAR/.github/987db9a0aee4728509ad6fb4d175b0350511900c \
+-c \
+"$SHELL" \
+<<'COMMANDS'
+while ! ssh -T -i id_ed25519 -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket'; do \
+  echo $(date +'%d/%m/%Y %H:%M:%S:%3N'); sleep 0.5; done
+COMMANDS
+
+nix \
+develop \
+github:PedroRegisPOAR/.github/987db9a0aee4728509ad6fb4d175b0350511900c \
+-c \
+"$SHELL" \
+-c \
+'podman run -it --rm docker.io/library/alpine sh -c "cat /etc/os-*release"'
+```
+
+```bash
+time \
 nix \
 build \
 --max-jobs auto \
 --no-link \
 --no-show-trace \
 --print-build-logs \
-github:PedroRegisPOAR/.github/c5ff24579ff2dfe933e517660ab218e8bacfe9e1#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/987db9a0aee4728509ad6fb4d175b0350511900c#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 send-signed-closure-run-time-of-flake-uri-attr-to-bucket \
 github:PedroRegisPOAR/.github/c5ff24579ff2dfe933e517660ab218e8bacfe9e1#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
