@@ -627,11 +627,11 @@
             # || ( "$RUN_BUID_VM_SCRIPT_PATH" & )
 
             # $("$RUN_BUID_VM_SCRIPT_PATH" < /dev/null &)&
-            "$RUN_BUID_VM_SCRIPT_PATH"
+            # "$RUN_BUID_VM_SCRIPT_PATH"
 
             # TODO: pq o podman.service não está ativo?
-            while ! ssh -T -i "$IDENTITY_FULL_PATH" -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket'; do \
-              echo $(date +'%d/%m/%Y %H:%M:%S:%3N'); sleep 0.5; done
+            # while ! ssh -T -i "$IDENTITY_FULL_PATH" -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket'; do \
+            #   echo $(date +'%d/%m/%Y %H:%M:%S:%3N'); sleep 0.5; done
 
         '';
       };
