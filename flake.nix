@@ -632,7 +632,6 @@
             while ! ssh -T -i "$IDENTITY_FULL_PATH" -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket'; do \
               echo $(date +'%d/%m/%Y %H:%M:%S:%3N'); sleep 0.5; done
 
-            exec $SHELL
         '';
       };
     });
