@@ -606,8 +606,8 @@
             export HOST_MAPPED_PORT=10022
             export REMOVE_DISK=true
             export QEMU_NET_OPTS=hostfwd=tcp::"$HOST_MAPPED_PORT"-:"$HOST_MAPPED_PORT",hostfwd=tcp::8000-:8000
-            export QEMU_OPTS="-nographic"
-            # export QEMU_OPTS="-daemonize -display none -monitor none"
+            # export QEMU_OPTS="-nographic"
+            export QEMU_OPTS="-daemonize -display none -monitor none"
             export SHARED_DIR="$(pwd)"
             export RUN_BUID_VM_SCRIPT_PATH="${self.nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm}"/bin/run-nixos-vm
             export CONTAINER_HOST=ssh://"$NIXOS_VM_USER"@localhost:"$HOST_MAPPED_PORT"/run/user/1234/podman/podman.sock
