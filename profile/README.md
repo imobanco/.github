@@ -3,6 +3,7 @@
 ```bash
 git clone git@github.com:PedroRegisPOAR/.github.git \
 && cd .github \
+&& git checkout feature/dx-with-nix-and-home-manager \
 && ((direnv 1>/dev/null 2>/dev/null && direnv allow) || nix develop .#)
 ```
 
