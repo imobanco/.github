@@ -149,6 +149,9 @@
                   #
                   useNixStoreImage = true;
                   writableStore = true; # TODO
+
+                  graphics = false;
+                  # qemu.options = [ "-serial mon:stdio" ];
                 };
                 security.polkit.enable = true;
 
