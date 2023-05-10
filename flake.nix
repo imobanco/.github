@@ -152,7 +152,7 @@
 
                   # https://github.com/nix-community/nixos-generators/blob/10079333313ff62446e6f2b0e7c5231c7431d269/formats/vm-nogui.nix#L17C1-L18
                   graphics = false;
-                  qemu.options = [ "-serial mon:stdio" ];
+                  qemu.options = [ "-serial mon:stdio -display none -monitor none" ];
                 };
                 security.polkit.enable = true;
 
@@ -632,6 +632,7 @@
             while ! ssh -T -i "$IDENTITY_FULL_PATH" -o ConnectTimeout=1 -o StrictHostKeyChecking=no nixuser@localhost -p "$HOST_MAPPED_PORT" <<<'systemctl is-active podman.socket'; do \
               echo $(date +'%d/%m/%Y %H:%M:%S:%3N'); sleep 0.5; done
 
+            exec $SHELL
         '';
       };
     });
