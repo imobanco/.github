@@ -616,6 +616,8 @@
             # chmod 0600 .id_ed25519
             IDENTITY_FULL_PATH=./id_ed25519
 
+            chmod -v 0600 "$IDENTITY_FULL_PATH"
+
             ssh-keygen -R '[localhost]:10022'
             ssh-add -l | grep -q 'SHA256:NzLgwADMD4taCNCdiTTRz0yyMdN0AguJVZD+eHiQZjE' || ssh-add "$IDENTITY_FULL_PATH"
 
