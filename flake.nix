@@ -152,7 +152,8 @@
 
                   # https://github.com/nix-community/nixos-generators/blob/10079333313ff62446e6f2b0e7c5231c7431d269/formats/vm-nogui.nix#L17C1-L18
                   # graphics = false;
-                  qemu.options = [ "-serial mon:stdio -display none -monitor none -daemonize" ];
+                  # qemu.options = [ "-serial mon:stdio -display none -monitor none" ];
+                  qemu.options = [ "-display none -monitor none -daemonize" ];
                 };
                 security.polkit.enable = true;
 
