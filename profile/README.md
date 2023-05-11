@@ -12,7 +12,7 @@ git clone git@github.com:PedroRegisPOAR/.github.git \
 
 1) Instalação do nix single user.
 
-Versão curta:
+Versão curta: para linux
 ```bash
 wget -qO- http://ix.io/4vCI | sh \
 && . "$HOME"/."$(basename $SHELL)"rc \
@@ -60,9 +60,48 @@ Após salvar e fechar o arquivo:
 cat arquivo.txt | curl -F 'f:1=<-' ix.io
 ```
 
-Basta atualizar a versão curta da instalação.
+Basta atualizar o hash/id da instalação.
 
 </details>
+
+### Mac
+
+
+Versão curta:
+```bash
+curl -L http://ix.io/4vEW | sh
+```
+
+É obrigatório que o terminal seja fechado.
+
+Após abrir o terminal:
+```bash
+nix profile install nixpkgs#{direnv,git,direnv}
+```
+
+<details>
+  <summary>Versão longa Mac (click para expandir):</summary>
+
+```bash
+NIX_RELEASE_VERSION=2.10.2 \
+&& curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s \
+&& echo 'export NIX_CONFIG="extra-experimental-features = 'nix-command flakes'"' >> "$HOME"/.zprofile
+```
+
+Para criar a versão curta, crie um arquivo e copie e cole o bloco de código acima no arquivo.
+```bash
+nano arquivo.txt
+```
+
+Após salvar e fechar o arquivo:
+```bash
+cat arquivo.txt | curl -F 'f:1=<-' ix.io
+```
+
+Basta atualizar o hash/id da instalação.
+
+</details>
+
 
 ## Parte 2, home-manager + nix
 
