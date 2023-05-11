@@ -14,7 +14,7 @@ git clone git@github.com:PedroRegisPOAR/.github.git \
 
 Versão curta:
 ```bash
-wget -qO- http://ix.io/4vmd | sh \
+wget -qO- http://ix.io/4vCI | sh \
 && . "$HOME"/."$(basename $SHELL)"rc \
 && nix flake --version
 ```
@@ -27,8 +27,8 @@ wget -qO- http://ix.io/4vmd | sh \
 command -v curl || (command -v apt && sudo apt-get update && sudo apt-get install -y curl)
 command -v curl || (command -v apk && sudo apk add --no-cache curl)
 
-# DAEMON_OR_NO_DAEMON='--'"$((lauchctl --version 1>/dev/null 2>/dev/null || systemctl --version 1>/dev/null 2>/dev/null) && echo daemon || echo no-daemon)"
-DAEMON_OR_NO_DAEMON='--'"$($(lauchctl --version 1>/dev/null 2>/dev/null) && echo daemon || echo no-daemon)"
+# DAEMON_OR_NO_DAEMON='--'"$((launchctl version 1>/dev/null 2>/dev/null || systemctl --version 1>/dev/null 2>/dev/null) && echo daemon || echo no-daemon)"
+DAEMON_OR_NO_DAEMON='--'"$($(launchctl version 1>/dev/null 2>/dev/null) && echo daemon || echo no-daemon)"
 
 
 NIX_RELEASE_VERSION=2.10.2 \
@@ -55,7 +55,7 @@ Para criar a versão curta, crie um arquivo e copie e cole o bloco de código ac
 nano arquivo.txt
 ```
 
-Após salvar:
+Após salvar e fechar o arquivo:
 ```bash
 cat arquivo.txt | curl -F 'f:1=<-' ix.io
 ```
@@ -71,6 +71,16 @@ programas com interface gráfica.
  
 1.1) Apenas programas CLI:
 
+
+Versão curta:
+```bash
+wget -qO- http://ix.io/4udG | sh
+```
+
+
+<details>
+  <summary>Versão longa (click para expandir):</summary>
+
 ```bash
 # Precisa das variáveis de ambiente USER e HOME
 
@@ -81,9 +91,26 @@ DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 export DUMMY_USER="$USER"
 # export DUMMY_USER="$(id -un)"
 
-# TODO: Mac
-# export DUMMY_HOME="$HOME"
-export DUMMY_HOME=/home/"$USER"
+IS_DARWIN=$(nix eval --impure --expr '((builtins.getFlake "github:NixOS/nixpkgs").legacyPackages.${builtins.currentSystem}.stdenv.isDarwin)')
+IS_LINUX=$(nix eval --impure --expr '((builtins.getFlake "github:NixOS/nixpkgs").legacyPackages.${builtins.currentSystem}.stdenv.isLinux)')
+
+
+FLAKE_ARCHITECTURE=$(nix eval --impure --raw --expr 'builtins.currentSystem').
+
+if [ "$IS_DARWIN" = "true" ]; then
+  echo 'The system archtecture was detected as: '"$FLAKE_ARCHITECTURE"
+  DUMMY_HOME_PREFIX='/Users'
+fi
+
+if [ "$IS_LINUX" = "true" ]; then
+  echo 'The system archtecture was detected as: '"$FLAKE_ARCHITECTURE"
+  DUMMY_HOME_PREFIX='/home'
+fi
+
+
+CONFIG_NIXPKGS=${OVERRIDE_DIRECTORY_CONFIG_NIXPKGS:-.config/nixpkgs}
+
+export DUMMY_HOME="$DUMMY_HOME_PREFIX"/"$USER"
 
 # export DUMMY_HOSTNAME=alpine316.localdomain
 export DUMMY_HOSTNAME="$(hostname)"
@@ -174,12 +201,15 @@ bash <<-EOF
 EOF
 ```
 
+</details>
 
-Versão curta:
+
 ```bash
-wget -qO- http://ix.io/4uz3 | sh \
-&& . "$HOME"/."$(basename $SHELL)"rc \
-&& nix flake --version
+# TODO: se não existir criar?
+create-nix-hardcoded-sign-cache-keys
+
+send-signed-closure-run-time-of-flake-uri-attr-to-bucket \
+"$HOME"/.config/nixpkgs#'homeConfigurations."vagrant-alpine316.localdomain".activationPackage'
 ```
 
 
@@ -187,14 +217,14 @@ wget -qO- http://ix.io/4uz3 | sh \
 nix \
 --option eval-cache false \
 --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
---option extra-substituters https://playing-bucket-nix-cache-test.s3.amazonaws.com \
+--option extra-substituters "s3://playing-bucket-nix-cache-test" \
 build \
 --keep-failed \
 --max-jobs 0 \
 --no-link \
 --print-build-logs \
 --print-out-paths \
-/nix/store/8c3ssm2avqxyfhcz7jik9s857s3kyz0q-home-manager-generation
+/nix/store/a7mqcffbs91k9r3g7qvc7kax2kpabn7m-home-manager-generation
 ```
 
 ```bash
@@ -1198,4 +1228,63 @@ nixuser@localhost \
 PID=?
 tr '\0' '\n' < /proc/${PID}/cmdline
 strace -f -T -y -e trace=file
+```
+
+
+### Caching
+
+
+
+```bash
+nix \
+--option eval-cache false \
+--option extra-trusted-public-keys 'binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg=' \
+--option extra-trusted-substituters 's3://playing-bucket-nix-cache-test/' \
+build \
+--keep-failed \
+--max-jobs 0 \
+--no-link \
+--print-build-logs \
+--print-out-paths \
+github:PedroRegisPOAR/.github/1c8c36a2c81a14445f3f16c61014f397315f5cef#nixosConfigurations.aarch64-linux.nixosBuildVMAarch64LinuxPodman.config.system.build.vm
+
+
+nix \
+--option eval-cache false \
+--option extra-trusted-public-keys 'binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg=' \
+--option extra-trusted-substituters 's3://playing-bucket-nix-cache-test/' \
+build \
+--keep-failed \
+--max-jobs auto \
+--no-link \
+--print-build-logs \
+--print-out-paths \
+github:PedroRegisPOAR/.github/1c8c36a2c81a14445f3f16c61014f397315f5cef#nixosConfigurations.aarch64-linux.nixosBuildVMAarch64LinuxPodman.config.system.build.vm
+```
+
+
+```bash
+trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg=
+trusted-substituters = s3://playing-bucket-nix-cache-test/
+trusted-users = root alvaro
+build-users-group = nixbld
+```
+
+```bash
+sudo rm -frv nixos.qcow2 keys
+```
+
+```bash
+sudo nix --extra-experimental-features 'nix-command flakes' run nixpkgs#darwin.builder
+```
+
+```bash
+qemu-system-aarch64 -accel help
+```
+
+
+```bash
+Accelerators supported in QEMU binary:
+hvf
+tcg
 ```
