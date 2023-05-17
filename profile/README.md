@@ -7,10 +7,8 @@ git clone git@github.com:PedroRegisPOAR/.github.git \
 && ((direnv 1>/dev/null 2>/dev/null && direnv allow) || nix develop .#)
 ```
 
-## Template
 
-
-1) Instalação do nix single user.
+1) Instalação do nix para apenas UM usuário, _single user_, que é equivalente a usar a flag `--no-daemon`.
 
 Versão curta: para linux
 ```bash
@@ -64,6 +62,61 @@ Basta atualizar o hash/id da instalação.
 
 </details>
 
+
+
+2) Instalação do nix para MULTIPLOS usuários compartilhando o mesmo computador, _multi user_, que é 
+equivalente a usar a flag `--daemon`.
+
+
+Parte 2.1)
+```bash
+command -v curl || (command -v apt && sudo apt-get update && sudo apt-get install -y curl)
+command -v curl || (command -v apk && sudo apk add --no-cache curl)
+
+DAEMON_OR_NO_DAEMON='--daemon'
+
+
+NIX_RELEASE_VERSION=2.10.2 \
+&& curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s -- "$DAEMON_OR_NO_DAEMON" \
+&& exit 0
+```
+
+
+Parte 2.2)
+```bash
+sudo \
+$SHELL \
+<<'COMMANDS'
+NAME_SHELL=$(basename $SHELL) \
+&& echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo '. "$HOME"/.nix-profile/etc/profile.d/nix.sh' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/.profile \
+&& echo '. "$HOME"/.nix-profile/etc/profile.d/nix.sh' >> "$HOME"/.profile \
+&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/.profile \
+&& . "$HOME"/."$NAME_SHELL"rc \
+&& . "$HOME"/.profile \
+&& nix flake --version \
+&& nix --extra-experimental-features 'nix-command flakes' profile install -vvv nixpkgs#direnv nixpkgs#git \
+&& . "$HOME"/."$NAME_SHELL"rc \
+&& . "$HOME"/.profile
+COMMANDS
+
+
+NAME_SHELL=$(basename $SHELL) \
+&& echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/.profile \
+&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/.profile \
+&& . "$HOME"/."$NAME_SHELL"rc \
+&& . "$HOME"/.profile \
+&& nix flake --version \
+&& nix --extra-experimental-features 'nix-command flakes' profile install -vvv nixpkgs#direnv nixpkgs#git \
+&& . "$HOME"/."$NAME_SHELL"rc \
+&& . "$HOME"/.profile
+```
+
+
 ### Mac
 
 
@@ -76,7 +129,7 @@ curl -L http://ix.io/4vEW | sh
 
 Após abrir o terminal:
 ```bash
-nix profile install nixpkgs#{direnv,git,direnv}
+nix profile install nixpkgs#{direnv,git,direnv,curl,wget}
 ```
 
 <details>
