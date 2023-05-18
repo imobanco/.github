@@ -77,13 +77,8 @@ DAEMON_OR_NO_DAEMON='--daemon'
 
 
 NIX_RELEASE_VERSION=2.10.2 \
-&& curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s -- "$DAEMON_OR_NO_DAEMON" \
-&& exit 0
-```
+&& curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s -- "$DAEMON_OR_NO_DAEMON"
 
-
-Parte 2.2)
-```bash
 sudo \
 $SHELL \
 <<'COMMANDS'
@@ -103,6 +98,55 @@ NAME_SHELL=$(basename $SHELL) \
 COMMANDS
 
 
+sudo ln -sfv "$HOME"/.nix-profile /nix/var/nix/profiles/default/ \
+&& sudo "$SHELL" -lc 'nix profile install -vvv nixpkgs#direnv nixpkgs#git --profile '"$HOME"'/.nix-profile' \
+&& NAME_SHELL=$(basename $SHELL) \
+&& echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/.profile \
+&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/.profile
+```
+
+```bash
+echo 'Start group stuff...' \
+&& SUDO_ADMIN_GROUP_NAME='sudo' \
+&& getent group "$SUDO_ADMIN_GROUP_NAME" || sudo groupadd "$SUDO_ADMIN_GROUP_NAME" \
+&& sudo usermod --append --groups "$SUDO_ADMIN_GROUP_NAME" "$USER" \
+&& echo 'End group stuff!'
+```
+
+```bash
+sudo chown $(id -u):$(id -g) /nix/store/kyk7f08qqmn86p0f0wzkr1rqjakbg418-shadow-4.11.1/bin/new{u,g}idmap
+```
+
+
+```bash
+$(test $(stat -c %u:%g /nix/store) = $(id -u):$(id -g)) \
+|| sudo chown $(id -u):$(id -g) /nix/store/kyk7f08qqmn86p0f0wzkr1rqjakbg418-shadow-4.11.1/bin/new{u,g}idmap
+```
+
+```bash
+test $(stat -c %u:%g /nix) = 0:0
+```
+
+
+podman --version
+
+```bash
+podman info 1> /dev/null 2> /dev/null \
+|| sudo chown $(id -u):$(id -g) /nix/store/kyk7f08qqmn86p0f0wzkr1rqjakbg418-shadow-4.11.1/bin/new{u,g}idmap
+```
+
+Feche o terminal.
+
+Parte 2.2)
+
+Abra o terminal novamente e cole o código abaixo:
+```bash
+sudo \
+su \
+"$USER" \
+<<'COMMANDS'
 NAME_SHELL=$(basename $SHELL) \
 && echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/."$NAME_SHELL"rc \
 && echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/."$NAME_SHELL"rc \
@@ -114,7 +158,19 @@ NAME_SHELL=$(basename $SHELL) \
 && nix --extra-experimental-features 'nix-command flakes' profile install -vvv nixpkgs#direnv nixpkgs#git \
 && . "$HOME"/."$NAME_SHELL"rc \
 && . "$HOME"/.profile
+COMMANDS
 ```
+
+
+nix run nixpkgs#nix-info -- -m
+
+ - system: `"x86_64-linux"`
+ - host os: `Linux 5.15.0-58-generic, Ubuntu, 22.04.1 LTS (Jammy Jellyfish), nobuild`
+ - multi-user?: `yes`
+ - sandbox: `yes`
+ - version: `nix-env (Nix) 2.10.2`
+ - channels(root): `"nixpkgs"`
+ - nixpkgs: `/nix/var/nix/profiles/per-user/root/channels/nixpkgs
 
 
 ### Mac
