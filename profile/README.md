@@ -114,6 +114,40 @@ sudo ln -sfv "$HOME"/.nix-profile /nix/var/nix/profiles/default/ \
 && echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/.profile
 ```
 
+
+Cria um usuário com:
+- `$HOME`;
+- participante do grupo `sudo`, ou seja, equivalente a permissão `root`;
+- configura uma senha para esse user.
+
+```bash
+NOME_DO_SEU_USER=testuser
+
+sudo useradd -m -s "$SHELL" "$NOME_DO_SEU_USER"
+sudo usermod --append --groups sudo "$NOME_DO_SEU_USER"
+sudo passwd "$NOME_DO_SEU_USER"
+  
+# TODO: talvez o snipet abaixo possa ser mergido com esse aproveitando que se sabe o "home do user" pois se tem o nome do user
+```
+
+
+Para cada usuário criado é necessário adicionar esse "hack" para poder utilizar o `podman`:
+```bash
+NAME_SHELL=$(basename $SHELL)
+
+tee -a "$HOME"/."$NAME_SHELL"rc <<'EOF'
+FULL_PATH_TO_UIDMAP='/nix/store/kyk7f08qqmn86p0f0wzkr1rqjakbg418-shadow-4.11.1/bin/newuidmap'
+FULL_PATH_TO_GIDMAP='/nix/store/kyk7f08qqmn86p0f0wzkr1rqjakbg418-shadow-4.11.1/bin/newgidmap'
+
+$(test $(stat -c %u:%g "$FULL_PATH_TO_UIDMAP") = $(id -u):$(id -g)) || sudo chown -v $(id -u):$(id -g) "$FULL_PATH_TO_UIDMAP"
+$(test $(stat -c %u:%g "$FULL_PATH_TO_GIDMAP") = $(id -u):$(id -g)) || sudo chown -v $(id -u):$(id -g) "$FULL_PATH_TO_GIDMAP"
+
+unset FULL_PATH_TO_UIDMAP
+unset FULL_PATH_TO_GIDMAP
+EOF
+```
+
+
 ```bash
 echo 'Start group stuff...' \
 && SUDO_ADMIN_GROUP_NAME='sudo' \
@@ -136,13 +170,7 @@ $(test $(stat -c %u:%g /nix/store) = $(id -u):$(id -g)) \
 test $(stat -c %u:%g /nix) = 0:0
 ```
 
-```bash
-NOME_DO_SEU_USER=testuser
 
-sudo useradd -m -s "$SHELL" "$NOME_DO_SEU_USER"
-sudo usermod --append --groups sudo "$NOME_DO_SEU_USER"
-sudo passwd "$NOME_DO_SEU_USER"
-```
 
 
 ```bash
