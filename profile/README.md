@@ -68,6 +68,13 @@ Basta atualizar o hash/id da instalação.
 equivalente a usar a flag `--daemon`.
 
 
+Versão curta: para linux
+```bash
+wget -qO- http://ix.io/4w9r | sh \
+&& . "$HOME"/."$(basename $SHELL)"rc \
+&& nix flake --version
+```
+
 Parte 2.1)
 ```bash
 command -v curl || (command -v apt && sudo apt-get update && sudo apt-get install -y curl)
@@ -129,15 +136,25 @@ $(test $(stat -c %u:%g /nix/store) = $(id -u):$(id -g)) \
 test $(stat -c %u:%g /nix) = 0:0
 ```
 
+```bash
+NOME_DO_SEU_USER=testuser
 
-podman --version
+sudo useradd -m -s "$SHELL" "$NOME_DO_SEU_USER"
+sudo usermod --append --groups sudo "$NOME_DO_SEU_USER"
+sudo passwd "$NOME_DO_SEU_USER"
+```
+
 
 ```bash
 podman info 1> /dev/null 2> /dev/null \
-|| sudo chown $(id -u):$(id -g) /nix/store/kyk7f08qqmn86p0f0wzkr1rqjakbg418-shadow-4.11.1/bin/new{u,g}idmap
+|| sudo chown -v $(id -u):sudo /nix/store/kyk7f08qqmn86p0f0wzkr1rqjakbg418-shadow-4.11.1/bin/new{u,g}idmap
 ```
 
 Feche o terminal.
+
+Notas:
+- [Allow gc-ing with a rootless daemon](https://github.com/NixOS/nix/pull/5380)
+- [Extra-secure store objects that Nix cannot modify](https://github.com/NixOS/nix/issues/7471)
 
 Parte 2.2)
 
