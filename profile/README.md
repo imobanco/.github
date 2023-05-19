@@ -150,6 +150,7 @@ Para cada usuário criado é necessário adicionar esse "hack" para poder utiliz
 NAME_SHELL=$(basename $SHELL)
 
 tee -a "$HOME"/."$NAME_SHELL"rc <<'EOF'
+
 FULL_PATH_TO_UIDMAP='/nix/store/kyk7f08qqmn86p0f0wzkr1rqjakbg418-shadow-4.11.1/bin/newuidmap'
 FULL_PATH_TO_GIDMAP='/nix/store/kyk7f08qqmn86p0f0wzkr1rqjakbg418-shadow-4.11.1/bin/newgidmap'
 
@@ -158,6 +159,7 @@ $(test $(stat -c %u:%g "$FULL_PATH_TO_GIDMAP") = $(id -u):$(id -g)) || sudo chow
 
 unset FULL_PATH_TO_UIDMAP
 unset FULL_PATH_TO_GIDMAP
+
 EOF
 ```
 
