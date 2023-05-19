@@ -70,12 +70,12 @@ equivalente a usar a flag `--daemon`.
 
 Versão curta: para linux
 ```bash
-wget -qO- http://ix.io/4w9r | sh \
-&& . "$HOME"/."$(basename $SHELL)"rc \
-&& nix flake --version
+wget -qO- http://ix.io/4w9r | sh
 ```
 
-Parte 2.1)
+<details>
+  <summary>Versão longa (click para expandir):</summary>
+
 ```bash
 command -v curl || (command -v apt && sudo apt-get update && sudo apt-get install -y curl)
 command -v curl || (command -v apk && sudo apk add --no-cache curl)
@@ -113,6 +113,20 @@ sudo ln -sfv "$HOME"/.nix-profile /nix/var/nix/profiles/default/ \
 && echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/.profile \
 && echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/.profile
 ```
+
+Para criar a versão curta, crie um arquivo e copie e cole o bloco de código acima no arquivo.
+```bash
+nano arquivo.txt
+```
+
+Após salvar e fechar o arquivo:
+```bash
+cat arquivo.txt | curl -F 'f:1=<-' ix.io
+```
+
+Basta atualizar o hash/id da instalação.
+
+</details>
 
 
 Cria um usuário com:
@@ -184,7 +198,7 @@ Notas:
 - [Allow gc-ing with a rootless daemon](https://github.com/NixOS/nix/pull/5380)
 - [Extra-secure store objects that Nix cannot modify](https://github.com/NixOS/nix/issues/7471)
 
-Parte 2.2)
+Parte old)
 
 Abra o terminal novamente e cole o código abaixo:
 ```bash
