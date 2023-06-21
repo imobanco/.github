@@ -3,8 +3,11 @@
 
   inputs = {
     # Specify the source of Home Manager and Nixpkgs
-    home-manager.url = "github:nix-community/home-manager";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nix flake metadata github:nix-community/home-manager/release-22.11
+    home-manager.url = "github:nix-community/home-manager/b372d7f8d5518aaba8a4058a453957460481afbc";
+
+    # nix flake metadata github:nixos/nixpkgs/release-22.11
+    nixpkgs.url = "github:nixos/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 

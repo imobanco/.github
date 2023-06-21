@@ -43,7 +43,8 @@ NAME_SHELL=$(basename $SHELL) \
 && . "$HOME"/."$NAME_SHELL"rc \
 && . "$HOME"/.profile \
 && nix flake --version \
-&& nix --extra-experimental-features 'nix-command flakes' profile install -vvv nixpkgs#direnv nixpkgs#git \
+&& nix --extra-experimental-features 'nix-command flakes' -vv registry pin nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+&& nix --extra-experimental-features 'nix-command flakes' -vv profile install nixpkgs#direnv nixpkgs#git \
 && . "$HOME"/."$NAME_SHELL"rc \
 && . "$HOME"/.profile
 ```
