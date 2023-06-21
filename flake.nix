@@ -804,7 +804,7 @@
           curl
           gnumake
           patchelf
-          poetry
+          # poetry
           python3Full
           tmate
         ];
