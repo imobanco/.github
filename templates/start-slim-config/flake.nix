@@ -24,6 +24,8 @@
         pkgs = nixpkgs.legacyPackages.${system};
 
         modules = [
+          # https://discourse.nixos.org/t/flakes-error-error-attribute-outpath-missing/18044/2
+          ({...}: { nix.registry.nixpkgs.flake = nixpkgs; })
           {
             home = {
               inherit username;

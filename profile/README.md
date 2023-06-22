@@ -301,8 +301,9 @@ DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 export DUMMY_USER="$USER"
 # export DUMMY_USER="$(id -un)"
 
-IS_DARWIN=$(nix eval --impure --expr '((builtins.getFlake "github:NixOS/nixpkgs").legacyPackages.${builtins.currentSystem}.stdenv.isDarwin)')
-IS_LINUX=$(nix eval --impure --expr '((builtins.getFlake "github:NixOS/nixpkgs").legacyPackages.${builtins.currentSystem}.stdenv.isLinux)')
+IS_DARWIN=$(nix eval nixpkgs#stdenv.isDarwin)
+IS_LINUX=$(nix eval nixpkgs#stdenv.isLinux)
+
 
 
 FLAKE_ARCHITECTURE=$(nix eval --impure --raw --expr 'builtins.currentSystem').
@@ -331,12 +332,12 @@ FLAKE_ATTR="$DIRECTORY_TO_CLONE""#homeConfigurations."'\"'"$HM_ATTR_FULL_NAME"'\
 
 BASE_FLAKE_URI='github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#'
 
+# --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
+# --option extra-substituters "s3://playing-bucket-nix-cache-test" \
 time \
 nix \
 --extra-experimental-features 'nix-command flakes' \
 --option eval-cache false \
---option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
---option extra-substituters "s3://playing-bucket-nix-cache-test" \
 shell \
 "$BASE_FLAKE_URI"git \
 "$BASE_FLAKE_URI"bashInteractive \
@@ -367,20 +368,21 @@ bash <<-EOF
     && git init \
     && git status \
     && git add . \
-    && nix flake update --override-input nixpkgs github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb \
+    && nix flake update --override-input nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
     && git status \
     && git add .
-    
+
     echo "$FLAKE_ATTR"
-    # TODO: --max-jobs 0 \
+    # TODO: 
+    # --max-jobs 0 \
+    # --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
+    # --option extra-substituters "s3://playing-bucket-nix-cache-test" \
+
     nix \
     --extra-experimental-features 'nix-command flakes' \
     --option eval-cache false \
-    --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
-    --option extra-substituters "s3://playing-bucket-nix-cache-test" \
     build \
     --keep-failed \
-    --max-jobs 0 \
     --no-link \
     --print-build-logs \
     --print-out-paths \
