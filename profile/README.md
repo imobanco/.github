@@ -293,19 +293,15 @@ wget -qO- http://ix.io/4udG | sh
 
 ```bash
 # Precisa das variáveis de ambiente USER e HOME
+test $USER || echo The USER variable is not set && exit 1
+test $HOME || echo The HOME variable is not set && exit 1
 
-DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
-
-
-# export DUMMY_USER=alpine
-export DUMMY_USER="$USER"
 # export DUMMY_USER="$(id -un)"
+export DUMMY_USER="$USER"
+DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 
 IS_DARWIN=$(nix eval nixpkgs#stdenv.isDarwin)
 IS_LINUX=$(nix eval nixpkgs#stdenv.isLinux)
-
-
-
 FLAKE_ARCHITECTURE=$(nix eval --impure --raw --expr 'builtins.currentSystem').
 
 if [ "$IS_DARWIN" = "true" ]; then
@@ -318,19 +314,16 @@ if [ "$IS_LINUX" = "true" ]; then
   DUMMY_HOME_PREFIX='/home'
 fi
 
-
+# Útil para testar usando um diretório diferente:
 CONFIG_NIXPKGS=${OVERRIDE_DIRECTORY_CONFIG_NIXPKGS:-.config/nixpkgs}
 
 export DUMMY_HOME="$DUMMY_HOME_PREFIX"/"$USER"
-
-# export DUMMY_HOSTNAME=alpine316.localdomain
 export DUMMY_HOSTNAME="$(hostname)"
 
 HM_ATTR_FULL_NAME='"'"$DUMMY_USER"-"$DUMMY_HOSTNAME"'"'
 FLAKE_ATTR="$DIRECTORY_TO_CLONE""#homeConfigurations."'\"'"$HM_ATTR_FULL_NAME"'\"'".activationPackage"
 
-
-BASE_FLAKE_URI='github:NixOS/nixpkgs/f5ffd5787786dde3a8bf648c7a1b5f78c4e01abb#'
+BASE_FLAKE_URI='github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c#'
 
 # --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
 # --option extra-substituters "s3://playing-bucket-nix-cache-test" \
@@ -353,7 +346,6 @@ bash <<-EOF
     cd $DIRECTORY_TO_CLONE
     
     export NIX_CONFIG='extra-experimental-features = nix-command flakes'
-    
     echo $NIX_CONFIG
     
     nix \
@@ -377,7 +369,6 @@ bash <<-EOF
     # --max-jobs 0 \
     # --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
     # --option extra-substituters "s3://playing-bucket-nix-cache-test" \
-
     nix \
     --extra-experimental-features 'nix-command flakes' \
     --option eval-cache false \
@@ -391,7 +382,7 @@ bash <<-EOF
     nix --extra-experimental-features 'nix-command flakes' -vvv profile remove '.*'
 
     export NIXPKGS_ALLOW_UNFREE=1 \
-    && home-manager switch -b backuphm --impure --flake \
+    && home-manager switch --backup backuphm --impure --flake \
          "$DIRECTORY_TO_CLONE"#"$HM_ATTR_FULL_NAME" \
     && home-manager generations
 
