@@ -807,6 +807,7 @@
           # poetry
           python3Full
           tmate
+          podman
         ];
 
         shellHook = ''

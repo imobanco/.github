@@ -841,17 +841,28 @@ https://github.com/imobanco/.config-nixpkgs
 
 #### Instalando o homebrew
 
+1)
 ```bash
-NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/fc8acb0828f89f8aa83162000db1b49de71fa5d8/install.sh)" \
+export NONINTERACTIVE=1 \
+&& /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/fc8acb0828f89f8aa83162000db1b49de71fa5d8/install.sh)" \
 && echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
 ```
+
+2)
+```bash
+export NONINTERACTIVE=1 \
+&& COMMIT_SHA256=fc8acb0828f89f8aa83162000db1b49de71fa5d8 \
+&& /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/$COMMIT_SHA256/install.sh)" \
+&& echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
+```
+
 
 Instalando o `hello`:
 ```bash
 brew install hello
 ```
 
-Testando o `hello`
+Testando o `hello`:
 ```bash
 hello
 ```
