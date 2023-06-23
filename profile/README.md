@@ -70,10 +70,14 @@ Basta atualizar o hash/id da instalação.
 ## Instalação do nix para MULTIPLOS usuários compartilhando o mesmo computador
 
 
-Versão curta: para linux
+Versão curta:
 ```bash
 wget -qO- http://ix.io/4w9r | sh
 ```
+
+Notas:
+- [Allow gc-ing with a rootless daemon](https://github.com/NixOS/nix/pull/5380)
+- [Extra-secure store objects that Nix cannot modify](https://github.com/NixOS/nix/issues/7471)
 
 <details>
   <summary>Versão longa (click para expandir):</summary>
@@ -130,10 +134,11 @@ Basta atualizar o hash/id da instalação.
 
 </details>
 
+### Para MULTIPLOS usuários compartilhando o mesmo computador
 
-Cria um usuário com:
+O script abaixo cria um usuário com:
 - `$HOME`;
-- participante do grupo `sudo`, ou seja, equivalente a permissão `root`;
+- membro do grupo `sudo`, ou seja, equivalente a permissão `root`;
 - configura uma senha para esse user.
 
 ```bash
@@ -193,9 +198,6 @@ podman info 1> /dev/null 2> /dev/null \
 
 Feche o terminal.
 
-Notas:
-- [Allow gc-ing with a rootless daemon](https://github.com/NixOS/nix/pull/5380)
-- [Extra-secure store objects that Nix cannot modify](https://github.com/NixOS/nix/issues/7471)
 
 
 ### Mac
