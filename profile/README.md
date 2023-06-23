@@ -293,9 +293,6 @@ wget -qO- http://ix.io/4udG | sh
 
 ```bash
 # Precisa das variáveis de ambiente USER e HOME
-test $USER || echo The USER variable is not set && exit 1
-test $HOME || echo The HOME variable is not set && exit 1
-
 # export DUMMY_USER="$(id -un)"
 export DUMMY_USER="$USER"
 DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
@@ -382,7 +379,7 @@ bash <<-EOF
     nix --extra-experimental-features 'nix-command flakes' -vvv profile remove '.*'
 
     export NIXPKGS_ALLOW_UNFREE=1 \
-    && home-manager switch --backup backuphm --impure --flake \
+    && home-manager switch -b backuphm --impure --flake \
          "$DIRECTORY_TO_CLONE"#"$HM_ATTR_FULL_NAME" \
     && home-manager generations
 
