@@ -1,5 +1,7 @@
 # Hi there 👋
 
+## Clonando este repositório para desenvolvimento local
+
 ```bash
 git clone git@github.com:PedroRegisPOAR/.github.git \
 && cd .github \
@@ -8,7 +10,7 @@ git clone git@github.com:PedroRegisPOAR/.github.git \
 ```
 
 
-1) Instalação do nix para apenas UM usuário, _single user_, que é equivalente a usar a flag `--no-daemon`.
+## Instalação do nix para apenas UM usuário (apenas você utiliza a máquina), _single user_, que é equivalente a usar a flag `--no-daemon`
 
 Versão curta: para linux
 ```bash
@@ -65,8 +67,8 @@ Basta atualizar o hash/id da instalação.
 
 
 
-2) Instalação do nix para MULTIPLOS usuários compartilhando o mesmo computador, _multi user_, que é 
-equivalente a usar a flag `--daemon`.
+## Instalação do nix para MULTIPLOS usuários compartilhando o mesmo computador, _multi user_, que é 
+equivalente a usar a flag `--daemon`
 
 
 Versão curta: para linux
