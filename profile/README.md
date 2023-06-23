@@ -142,7 +142,8 @@ sudo useradd -m -s "$SHELL" "$NOME_DO_SEU_USER"
 sudo usermod --append --groups sudo "$NOME_DO_SEU_USER"
 sudo passwd "$NOME_DO_SEU_USER"
   
-# TODO: talvez o snipet abaixo possa ser mergido com esse aproveitando que se sabe o "home do user" pois se tem o nome do user
+# TODO: talvez o snipet abaixo possa ser mergido com esse aproveitando 
+#  que se sabe o "home do user" pois se tem o nome do user
 ```
 
 
@@ -183,12 +184,6 @@ $(test $(stat -c %u:%g /nix/store) = $(id -u):$(id -g)) \
 || sudo chown $(id -u):$(id -g) /nix/store/kyk7f08qqmn86p0f0wzkr1rqjakbg418-shadow-4.11.1/bin/new{u,g}idmap
 ```
 
-```bash
-test $(stat -c %u:%g /nix) = 0:0
-```
-
-
-
 
 ```bash
 podman info 1> /dev/null 2> /dev/null \
@@ -200,39 +195,6 @@ Feche o terminal.
 Notas:
 - [Allow gc-ing with a rootless daemon](https://github.com/NixOS/nix/pull/5380)
 - [Extra-secure store objects that Nix cannot modify](https://github.com/NixOS/nix/issues/7471)
-
-Parte old)
-
-Abra o terminal novamente e cole o código abaixo:
-```bash
-sudo \
-su \
-"$USER" \
-<<'COMMANDS'
-NAME_SHELL=$(basename $SHELL) \
-&& echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/."$NAME_SHELL"rc \
-&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/."$NAME_SHELL"rc \
-&& echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/.profile \
-&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/.profile \
-&& . "$HOME"/."$NAME_SHELL"rc \
-&& . "$HOME"/.profile \
-&& nix flake --version \
-&& nix --extra-experimental-features 'nix-command flakes' profile install -vvv nixpkgs#direnv nixpkgs#git \
-&& . "$HOME"/."$NAME_SHELL"rc \
-&& . "$HOME"/.profile
-COMMANDS
-```
-
-
-nix run nixpkgs#nix-info -- -m
-
- - system: `"x86_64-linux"`
- - host os: `Linux 5.15.0-58-generic, Ubuntu, 22.04.1 LTS (Jammy Jellyfish), nobuild`
- - multi-user?: `yes`
- - sandbox: `yes`
- - version: `nix-env (Nix) 2.10.2`
- - channels(root): `"nixpkgs"`
- - nixpkgs: `/nix/var/nix/profiles/per-user/root/channels/nixpkgs
 
 
 ### Mac
@@ -852,6 +814,8 @@ Refs.:
 - https://github.com/orgs/Homebrew/discussions/3199
 - https://github.com/Homebrew/brew/issues/3428
 - https://stackoverflow.com/questions/75140626/installing-brew-hangs-in-docker-build
+- https://stackoverflow.com/a/76188907
+- https://apple.stackexchange.com/questions/458026/which-etc-zsh-related-files-are-safe-from-os-update-overwrites
 
 
 Instalando o `hello`:
@@ -877,6 +841,11 @@ NIX_RELEASE_VERSION=2.10.2 \
 && curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s \
 && echo 'export NIX_CONFIG="extra-experimental-features = 'nix-command flakes'"' >> "$HOME"/.zprofile
 ```
+Ref.:
+- https://github.com/NixOS/nix/issues/3616#issuecomment-1430907248
+- https://github.com/NixOS/nix/issues/3616#issuecomment-1554690522
+- https://github.com/NixOS/nix/issues/3616#issuecomment-1557404536
+
 
 2) Feche o terminal, o instalador "obriga".
 
@@ -884,6 +853,15 @@ NIX_RELEASE_VERSION=2.10.2 \
 ```bash
 nix profile install nixpkgs#hello nixpkgs#tmate
 ```
+
+4) Testando a execussão do `hello`:
+```bash
+hello
+```
+
+
+##### Outros testes no Mac
+
 
 ```bash
 nix eval --impure --raw --expr 'builtins.currentSystem'
