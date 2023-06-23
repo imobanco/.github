@@ -841,20 +841,17 @@ https://github.com/imobanco/.config-nixpkgs
 
 #### Instalando o homebrew
 
-1)
-```bash
-export NONINTERACTIVE=1 \
-&& /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/fc8acb0828f89f8aa83162000db1b49de71fa5d8/install.sh)" \
-&& echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
-```
 
-2)
 ```bash
-export NONINTERACTIVE=1 \
-&& COMMIT_SHA256=fc8acb0828f89f8aa83162000db1b49de71fa5d8 \
+COMMIT_SHA256=fc8acb0828f89f8aa83162000db1b49de71fa5d8 \
 && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/$COMMIT_SHA256/install.sh)" \
 && echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
 ```
+Refs.:
+- https://brew.sh/
+- https://github.com/orgs/Homebrew/discussions/3199
+- https://github.com/Homebrew/brew/issues/3428
+- https://stackoverflow.com/questions/75140626/installing-brew-hangs-in-docker-build
 
 
 Instalando o `hello`:
@@ -874,15 +871,16 @@ brew uninstall hello
 
 #### Mac and nix
 
+1)
 ```bash
 NIX_RELEASE_VERSION=2.10.2 \
 && curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s \
 && echo 'export NIX_CONFIG="extra-experimental-features = 'nix-command flakes'"' >> "$HOME"/.zprofile
 ```
 
-Feche o terminal, instalador obriga.
+2) Feche o terminal, o instalador "obriga".
 
-Abra o terminal:
+3) Abra o terminal:
 ```bash
 nix profile install nixpkgs#hello nixpkgs#tmate
 ```
