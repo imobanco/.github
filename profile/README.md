@@ -10,7 +10,7 @@ git clone git@github.com:PedroRegisPOAR/.github.git \
 ```
 
 
-## Instalação do nix para apenas UM usuário (apenas você utiliza a máquina), _single user_, que é equivalente a usar a flag `--no-daemon`
+## Instalação do nix para apenas UM usuário (apenas você utiliza a máquina)
 
 Versão curta: para linux
 ```bash
@@ -67,8 +67,7 @@ Basta atualizar o hash/id da instalação.
 
 
 
-## Instalação do nix para MULTIPLOS usuários compartilhando o mesmo computador, _multi user_, que é 
-equivalente a usar a flag `--daemon`
+## Instalação do nix para MULTIPLOS usuários compartilhando o mesmo computador
 
 
 Versão curta: para linux
