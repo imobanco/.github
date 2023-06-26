@@ -239,6 +239,69 @@ Basta atualizar o hash/id da instalação.
 </details>
 
 
+#### Desinstalando Mac
+
+> Infelizmente não é algo muito "automágico".
+
+1)
+```bash
+# Customisado, adaptado do manual
+cat /etc/zshrc | sed -i "/# Nix/,/# End Nix/d"
+cat /etc/bashrc | sed -i "/# Nix/,/# End Nix/d"
+cat /etc/bash.bashrc | sed -i "/# Nix/,/# End Nix/d"
+```
+
+2)
+```bash
+sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+sudo rm /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+sudo launchctl unload /Library/LaunchDaemons/org.nixos.darwin-store.plist
+sudo rm /Library/LaunchDaemons/org.nixos.darwin-store.plist
+```
+
+3)
+```bash
+# Para debugar/verificar se os users existem
+# for u in $(sudo dscl . -list /Users | grep _nixbld);do echo $u; done
+sudo dscl . -delete /Groups/nixbld
+for u in $(sudo dscl . -list /Users | grep _nixbld); do sudo dscl . -delete /Users/$u; done
+```
+
+4) Tem que ser, ao menos por hora, feito manualmente:
+```bash
+sudo vifs
+```
+
+> Edit fstab using `sudo vifs` to remove the line mounting the Nix Store volume on /nix, which 
+> looks like `UUID=<uuid> /nix apfs rw,noauto,nobrowse,suid,owners` or `LABEL=Nix\040Store /nix apfs rw,nobrowse`. 
+> This will prevent automatic mounting of the Nix Store volume.
+
+5)
+```bash
+# Customisado, adaptado do manual
+([ $(grep nix /etc/synthetic.conf -c) = $(wc -l < /etc/synthetic.conf) ] && sudo rm -v /etc/synthetic.conf) || echo 'Verifique o conteúdo do arquivo /etc/synthetic.conf'
+```
+
+6)
+```bash
+# ls -al /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr /var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels
+
+sudo rm -rf /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr /var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels
+```
+
+7)
+```bash
+# sudo diskutil apfs list | grep 'Nix Store' -B2 -A4
+sudo diskutil apfs deleteVolume /nix
+```
+
+
+Refs.:
+- https://nixos.org/manual/nix/stable/installation/uninstall.html#macos
+- https://github.com/NixOS/nix/issues/458
+- https://github.com/NixOS/nix/issues/6787
+
+
 ## Parte 2, home-manager + nix
 
 Existem 3 tipos de configurações, descritos nas próximas seções: apenas CLI, apenas CLI slim, e com 
