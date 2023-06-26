@@ -281,6 +281,7 @@ sudo vifs
 # Customisado, adaptado do manual
 ([ $(grep nix /etc/synthetic.conf -c) = $(wc -l < /etc/synthetic.conf) ] && sudo rm -v /etc/synthetic.conf) || echo 'Verifique o conteúdo do arquivo /etc/synthetic.conf'
 ```
+TODO: https://www.reddit.com/r/Nix/comments/vwwfqb/uninstall_nix_on_macos_cant_delete_nix_store/
 
 6)
 ```bash
