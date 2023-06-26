@@ -301,6 +301,7 @@ Refs.:
 - https://nixos.org/manual/nix/stable/installation/uninstall.html#macos
 - https://github.com/NixOS/nix/issues/458
 - https://github.com/NixOS/nix/issues/6787
+- https://github.com/DeterminateSystems/nix-installer/issues/449#issuecomment-1551552972 voltado para flakes
 
 
 ## Parte 2, home-manager + nix
