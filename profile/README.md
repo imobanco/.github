@@ -337,11 +337,16 @@ sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist \
 && sudo rm -v /Library/LaunchDaemons/org.nixos.darwin-store.plist
 
 sudo dscl . -delete /Groups/nixbld
-for u in $(sudo dscl . -list /Users | grep _nixbld); do sudo dscl . -delete /Users/$u; done
+for u in $(sudo dscl . -list /Users | grep _nixbld); do echo $u && sudo dscl . -delete /Users/$u; done
 
 sudo sed -i '' '/nix/d' /etc/synthetic.conf \
-&& sudo rm -frv /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr \
-                /var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels \
+&& sudo rm -frv /etc/nix \
+                /var/root/.nix-profile \
+                /var/root/.nix-defexpr \
+                /var/root/.nix-channels \
+                ~/.nix-profile \
+                ~/.nix-defexpr \
+                ~/.nix-channels \
                 /etc/bashrc.backup-before-nix \
                 /etc/zshrc.backup-before-nix \
 && sudo diskutil apfs deleteVolume /nix
