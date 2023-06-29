@@ -222,6 +222,8 @@ nix profile install nixpkgs#{direnv,git,direnv,curl,wget}
 NIX_RELEASE_VERSION=2.10.2 \
 && curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s \
 && echo 'export NIX_CONFIG="extra-experimental-features = 'nix-command flakes'"' >> "$HOME"/.zprofile
+
+nix registry pin github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c
 ```
 
 Para criar a versão curta, crie um arquivo e copie e cole o bloco de código acima no arquivo.
@@ -239,24 +241,28 @@ Basta atualizar o hash/id da instalação.
 </details>
 
 
-#### Desinstalando Mac
+#### Desinstalando nix no Mac
 
 > Infelizmente não é algo muito "automágico".
 
 1)
 ```bash
 # Customisado, adaptado do manual
-cat /etc/zshrc | sed -i "/# Nix/,/# End Nix/d"
-cat /etc/bashrc | sed -i "/# Nix/,/# End Nix/d"
-cat /etc/bash.bashrc | sed -i "/# Nix/,/# End Nix/d"
+# cat /etc/zshrc | sed "/# Nix/,/# End Nix/d"
+# cat /etc/bashrc | sed "/# Nix/,/# End Nix/d"
+# cat /etc/bash.bashrc | sed "/# Nix/,/# End Nix/d"
+
+sed -i "/# Nix/,/# End Nix/d" /etc/zshrc
+sed -i "/# Nix/,/# End Nix/d" /etc/bashrc
+sed -i "/# Nix/,/# End Nix/d" /etc/bash.bashrc
 ```
 
 2)
 ```bash
 sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist
-sudo rm /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+sudo rm -v /Library/LaunchDaemons/org.nixos.nix-daemon.plist
 sudo launchctl unload /Library/LaunchDaemons/org.nixos.darwin-store.plist
-sudo rm /Library/LaunchDaemons/org.nixos.darwin-store.plist
+sudo rm -v /Library/LaunchDaemons/org.nixos.darwin-store.plist
 ```
 
 3)
@@ -281,13 +287,20 @@ sudo vifs
 # Customisado, adaptado do manual
 ([ $(grep nix /etc/synthetic.conf -c) = $(wc -l < /etc/synthetic.conf) ] && sudo rm -v /etc/synthetic.conf) || echo 'Verifique o conteúdo do arquivo /etc/synthetic.conf'
 ```
+
+```bash
+# sed '/nix/d' /etc/synthetic.conf
+sudo sed -i '/nix/d' /etc/synthetic.conf
+```
 TODO: https://www.reddit.com/r/Nix/comments/vwwfqb/uninstall_nix_on_macos_cant_delete_nix_store/
 
 6)
 ```bash
-# ls -al /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr /var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels
+# ls -al /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr \
+# /var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels
 
-sudo rm -rf /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr /var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels
+sudo rm -frv /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr \
+/var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels
 ```
 
 7)
@@ -302,6 +315,48 @@ Refs.:
 - https://github.com/NixOS/nix/issues/458
 - https://github.com/NixOS/nix/issues/6787
 - https://github.com/DeterminateSystems/nix-installer/issues/449#issuecomment-1551552972 voltado para flakes
+
+
+#### Script mergido
+
+TODO:
+```bash
+diskutil apfs list -plist | plutil -convert json -o - -
+```
+Refs.:
+- https://unix.stackexchange.com/questions/507217/specific-fields-from-macos-command-diskutil-apfs-list#comment1021730_507244
+
+```bash
+sudo sed -i '' '/# Nix/,/# End Nix/d' /etc/zshrc \
+&& sudo sed -i '' '/# Nix/,/# End Nix/d' /etc/bashrc \
+&& sudo sed -i '' '/# Nix/,/# End Nix/d' /etc/bash.bashrc
+
+sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist \
+&& sudo rm -v /Library/LaunchDaemons/org.nixos.nix-daemon.plist \
+&& sudo launchctl unload /Library/LaunchDaemons/org.nixos.darwin-store.plist \
+&& sudo rm -v /Library/LaunchDaemons/org.nixos.darwin-store.plist
+
+sudo dscl . -delete /Groups/nixbld
+for u in $(sudo dscl . -list /Users | grep _nixbld); do sudo dscl . -delete /Users/$u; done
+
+sudo sed -i '' '/nix/d' /etc/synthetic.conf \
+&& sudo rm -frv /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr \
+                /var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels \
+                /etc/bashrc.backup-before-nix \
+                /etc/zshrc.backup-before-nix \
+&& sudo diskutil apfs deleteVolume /nix
+
+sudo reboot
+```
+
+Checando que o volume não existe:
+```bash
+sudo diskutil apfs list | grep 'Nix Store' -B2 -A4
+```
+
+```bash
+ls -al /nix
+```
 
 
 ## Parte 2, home-manager + nix
