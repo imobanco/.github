@@ -323,15 +323,17 @@ Refs.:
 
 #### Script mergido
 
-TODO: como pegar o identificador único do disco? Usar o `jq`?
-```bash
-diskutil info -plist /nix | plutil -convert json -o - - | jq '."RecoveryDeviceIdentifier"'
-```
-Refs.:
-- https://unix.stackexchange.com/questions/507217/specific-fields-from-macos-command-diskutil-apfs-list#comment1021730_507244
-- https://apple.stackexchange.com/a/319977
+
+
+
 
 ```bash
+jq --version 1> /dev/null 2> /dev/null || nix profile install nixpkgs#jq
+
+VOLUME_NIX_DEVICE_IDENTIFIER=$(diskutil info -plist /nix | plutil -convert json -o - - | jq -r '."DeviceIdentifier"')
+
+echo $VOLUME_NIX_DEVICE_IDENTIFIER
+
 sudo sed -i '' '/# Nix/,/# End Nix/d' /etc/zshrc \
 && sudo sed -i '' '/# Nix/,/# End Nix/d' /etc/bashrc \
 && sudo sed -i '' '/# Nix/,/# End Nix/d' /etc/bash.bashrc
@@ -342,10 +344,10 @@ sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist \
 && sudo rm -v /Library/LaunchDaemons/org.nixos.darwin-store.plist
 
 sudo dscl . -delete /Groups/nixbld
-for u in $(sudo dscl . -list /Users | grep _nixbld); do echo $u && sudo dscl . -delete /Users/$u; done
 
 sudo sed -i '' '/nix/d' /etc/synthetic.conf \
 && sudo rm -frv \
+           /etc/bash.bashrc.backup-before-nix \
            /etc/bashrc.backup-before-nix \
            /etc/nix \
            /etc/zshrc.backup-before-nix \
@@ -355,9 +357,25 @@ sudo sed -i '' '/nix/d' /etc/synthetic.conf \
            ~/.nix-channels \
            ~/.nix-defexpr \
            ~/.nix-profile \
-&& sudo diskutil apfs deleteVolume /nix
+&& diskutil info -plist $VOLUME_NIX_DEVICE_IDENTIFIER 1>/dev/null 2>/dev/null \
+&& sudo diskutil apfs deleteVolume $VOLUME_NIX_DEVICE_IDENTIFIER \
+&& sudo reboot
+```
 
-sudo reboot
+
+Como pegar o identificador único do disco? Usar o `jq`?
+```bash
+diskutil info -plist /nix | plutil -convert json -o - - | jq -r '."DeviceIdentifier"'
+```
+Refs.:
+- https://unix.stackexchange.com/questions/507217/specific-fields-from-macos-command-diskutil-apfs-list#comment1021730_507244
+- https://apple.stackexchange.com/a/319977
+
+
+Não usado:
+```bash
+# for u in $(sudo dscl . -list /Users | grep _nixbld); do echo $u && sudo dscl . -delete /Users/$u; done
+# sudo diskutil apfs deleteVolume /nix
 ```
 
 Checando que o volume não existe:
