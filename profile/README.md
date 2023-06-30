@@ -212,7 +212,13 @@ curl -L http://ix.io/4vEW | sh
 
 Após abrir o terminal:
 ```bash
-nix profile install nixpkgs#{direnv,git,direnv,curl,wget}
+nix registry pin github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c
+```
+
+
+Testando a instalação:
+```bash
+nix profile install nixpkgs#{curl,direnv,git,jq,wget}
 ```
 
 <details>
@@ -222,8 +228,6 @@ nix profile install nixpkgs#{direnv,git,direnv,curl,wget}
 NIX_RELEASE_VERSION=2.10.2 \
 && curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s \
 && echo 'export NIX_CONFIG="extra-experimental-features = 'nix-command flakes'"' >> "$HOME"/.zprofile
-
-nix registry pin github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c
 ```
 
 Para criar a versão curta, crie um arquivo e copie e cole o bloco de código acima no arquivo.
@@ -319,12 +323,13 @@ Refs.:
 
 #### Script mergido
 
-TODO:
+TODO: como pegar o identificador único do disco? Usar o `jq`?
 ```bash
-diskutil apfs list -plist | plutil -convert json -o - -
+diskutil info -plist /nix | plutil -convert json -o - - | jq '."RecoveryDeviceIdentifier"'
 ```
 Refs.:
 - https://unix.stackexchange.com/questions/507217/specific-fields-from-macos-command-diskutil-apfs-list#comment1021730_507244
+- https://apple.stackexchange.com/a/319977
 
 ```bash
 sudo sed -i '' '/# Nix/,/# End Nix/d' /etc/zshrc \
@@ -340,15 +345,16 @@ sudo dscl . -delete /Groups/nixbld
 for u in $(sudo dscl . -list /Users | grep _nixbld); do echo $u && sudo dscl . -delete /Users/$u; done
 
 sudo sed -i '' '/nix/d' /etc/synthetic.conf \
-&& sudo rm -frv /etc/nix \
-                /var/root/.nix-profile \
-                /var/root/.nix-defexpr \
-                /var/root/.nix-channels \
-                ~/.nix-profile \
-                ~/.nix-defexpr \
-                ~/.nix-channels \
-                /etc/bashrc.backup-before-nix \
-                /etc/zshrc.backup-before-nix \
+&& sudo rm -frv \
+           /etc/bashrc.backup-before-nix \
+           /etc/nix \
+           /etc/zshrc.backup-before-nix \
+           /var/root/.nix-channels \
+           /var/root/.nix-defexpr \
+           /var/root/.nix-profile \
+           ~/.nix-channels \
+           ~/.nix-defexpr \
+           ~/.nix-profile \
 && sudo diskutil apfs deleteVolume /nix
 
 sudo reboot
