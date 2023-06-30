@@ -247,86 +247,10 @@ Basta atualizar o hash/id da instalação.
 
 #### Desinstalando nix no Mac
 
-> Infelizmente não é algo muito "automágico".
-
-1)
-```bash
-# Customisado, adaptado do manual
-# cat /etc/zshrc | sed "/# Nix/,/# End Nix/d"
-# cat /etc/bashrc | sed "/# Nix/,/# End Nix/d"
-# cat /etc/bash.bashrc | sed "/# Nix/,/# End Nix/d"
-
-sed -i "/# Nix/,/# End Nix/d" /etc/zshrc
-sed -i "/# Nix/,/# End Nix/d" /etc/bashrc
-sed -i "/# Nix/,/# End Nix/d" /etc/bash.bashrc
-```
-
-2)
-```bash
-sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist
-sudo rm -v /Library/LaunchDaemons/org.nixos.nix-daemon.plist
-sudo launchctl unload /Library/LaunchDaemons/org.nixos.darwin-store.plist
-sudo rm -v /Library/LaunchDaemons/org.nixos.darwin-store.plist
-```
-
-3)
-```bash
-# Para debugar/verificar se os users existem
-# for u in $(sudo dscl . -list /Users | grep _nixbld);do echo $u; done
-sudo dscl . -delete /Groups/nixbld
-for u in $(sudo dscl . -list /Users | grep _nixbld); do sudo dscl . -delete /Users/$u; done
-```
-
-4) Tem que ser, ao menos por hora, feito manualmente:
-```bash
-sudo vifs
-```
-
-> Edit fstab using `sudo vifs` to remove the line mounting the Nix Store volume on /nix, which 
-> looks like `UUID=<uuid> /nix apfs rw,noauto,nobrowse,suid,owners` or `LABEL=Nix\040Store /nix apfs rw,nobrowse`. 
-> This will prevent automatic mounting of the Nix Store volume.
-
-5)
-```bash
-# Customisado, adaptado do manual
-([ $(grep nix /etc/synthetic.conf -c) = $(wc -l < /etc/synthetic.conf) ] && sudo rm -v /etc/synthetic.conf) || echo 'Verifique o conteúdo do arquivo /etc/synthetic.conf'
-```
-
-```bash
-# sed '/nix/d' /etc/synthetic.conf
-sudo sed -i '/nix/d' /etc/synthetic.conf
-```
-TODO: https://www.reddit.com/r/Nix/comments/vwwfqb/uninstall_nix_on_macos_cant_delete_nix_store/
-
-6)
-```bash
-# ls -al /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr \
-# /var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels
-
-sudo rm -frv /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr \
-/var/root/.nix-channels ~/.nix-profile ~/.nix-defexpr ~/.nix-channels
-```
-
-7)
-```bash
-# sudo diskutil apfs list | grep 'Nix Store' -B2 -A4
-sudo diskutil apfs deleteVolume /nix
-```
+> Infelizmente não é algo "automágico".
 
 
-Refs.:
-- https://nixos.org/manual/nix/stable/installation/uninstall.html#macos
-- https://github.com/NixOS/nix/issues/458
-- https://github.com/NixOS/nix/issues/6787
-- https://github.com/DeterminateSystems/nix-installer/issues/449#issuecomment-1551552972 voltado para flakes
-
-
-#### Script mergido
-
-
-
-
-
+1) Script aglutinado
 ```bash
 jq --version 1> /dev/null 2> /dev/null || nix profile install nixpkgs#jq
 
@@ -358,37 +282,33 @@ sudo sed -i '' '/nix/d' /etc/synthetic.conf \
            ~/.nix-defexpr \
            ~/.nix-profile \
 && diskutil info -plist $VOLUME_NIX_DEVICE_IDENTIFIER 1>/dev/null 2>/dev/null \
-&& sudo diskutil apfs deleteVolume $VOLUME_NIX_DEVICE_IDENTIFIER \
-&& sudo reboot
-```
-
-
-Como pegar o identificador único do disco? Usar o `jq`?
-```bash
-diskutil info -plist /nix | plutil -convert json -o - - | jq -r '."DeviceIdentifier"'
+&& sudo diskutil apfs deleteVolume $VOLUME_NIX_DEVICE_IDENTIFIER
 ```
 Refs.:
+- https://nixos.org/manual/nix/stable/installation/uninstall.html#macos
+- https://github.com/NixOS/nix/issues/458
+- https://github.com/NixOS/nix/issues/6787
+- https://github.com/DeterminateSystems/nix-installer/issues/449#issuecomment-1551552972 voltado para flakes
 - https://unix.stackexchange.com/questions/507217/specific-fields-from-macos-command-diskutil-apfs-list#comment1021730_507244
 - https://apple.stackexchange.com/a/319977
 
 
-Não usado:
+2)
 ```bash
-# for u in $(sudo dscl . -list /Users | grep _nixbld); do echo $u && sudo dscl . -delete /Users/$u; done
-# sudo diskutil apfs deleteVolume /nix
+sudo reboot
 ```
 
-Checando que o volume não existe:
+
+Após o reboot checar que o volume não existe:
 ```bash
 sudo diskutil apfs list | grep 'Nix Store' -B2 -A4
-```
 
-```bash
 ls -al /nix
 ```
 
 
-## Parte 2, home-manager + nix
+
+## Parte 2, home-manager + nix, apenas GNU/Linux
 
 Existem 3 tipos de configurações, descritos nas próximas seções: apenas CLI, apenas CLI slim, e com 
 programas com interface gráfica.
