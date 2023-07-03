@@ -291,6 +291,7 @@ Refs.:
 - https://github.com/DeterminateSystems/nix-installer/issues/449#issuecomment-1551552972 voltado para flakes
 - https://unix.stackexchange.com/questions/507217/specific-fields-from-macos-command-diskutil-apfs-list#comment1021730_507244
 - https://apple.stackexchange.com/a/319977
+- https://fortechmenot.wordpress.com/2015/01/15/disabling-logins-for-mac-os-x-users/
 
 
 2)
