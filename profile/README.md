@@ -292,6 +292,7 @@ Refs.:
 - https://unix.stackexchange.com/questions/507217/specific-fields-from-macos-command-diskutil-apfs-list#comment1021730_507244
 - https://apple.stackexchange.com/a/319977
 - https://fortechmenot.wordpress.com/2015/01/15/disabling-logins-for-mac-os-x-users/
+- https://apple.stackexchange.com/questions/396301/finding-volume-label-and-understanding-the-apfs-partition
 
 
 2)
