@@ -31,6 +31,9 @@
               inherit username;
               homeDirectory = "/home/${username}"; # TODO: esse caminho muda no Mac!
               stateVersion = "22.11";
+              # https://discourse.nixos.org/t/correct-way-to-use-nixpkgs-in-nix-shell-on-flake-based-system-without-channels/19360/3
+              # sessionVariables.NIX_PATH = "nixpkgs=nixpkgs=flake:?";
+              sessionVariables.NIX_PATH = "nixpkgs=${pkgs.outPath}";
             };
             programs.home-manager.enable = true;
           }
