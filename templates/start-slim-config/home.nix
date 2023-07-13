@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, nixpkgs, ... }:
 
 {
 
@@ -485,6 +485,8 @@
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
+
+    registry.nixpkgs.flake = nixpkgs;
 
     settings = {
       # use-sandbox = true;

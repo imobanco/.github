@@ -25,7 +25,7 @@
 
         modules = [
           # https://discourse.nixos.org/t/flakes-error-error-attribute-outpath-missing/18044/2
-          ({...}: { nix.registry.nixpkgs.flake = nixpkgs; })
+          # ({...}: { nix.registry.nixpkgs.flake = nixpkgs; })
           {
             home = {
               inherit username;
@@ -39,6 +39,7 @@
 
         # TODO: how to: Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
+        extraSpecialArgs = { nixpkgs = nixpkgs; };
       };
 
       devShells.x86_64-linux.default = pkgs.mkShell {
@@ -48,7 +49,7 @@
           curl
           gnumake
           patchelf
-          poetry
+          # poetry
           python3Full
           tmate
         ];
