@@ -320,7 +320,7 @@ programas com interface gráfica.
 
 Versão curta:
 ```bash
-wget -qO- http://ix.io/4udG | sh
+wget -qO- http://ix.io/4Axd | sh
 ```
 
 
@@ -395,7 +395,8 @@ bash <<-EOF
     && git add . \
     && nix flake update --override-input nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
     && git status \
-    && git add .
+    && git add . \
+    && git commit -m 'First nix home-manager commit from installer'
 
     echo "$FLAKE_ATTR"
     # TODO: 
