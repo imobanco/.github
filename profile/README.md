@@ -65,7 +65,47 @@ Basta atualizar o hash/id da instalação.
 
 </details>
 
+### Experimental, nix estaticamente compilado, usando /nix
 
+```bash
+wget -qO- http://ix.io/4AL6 | sh \
+&& . "$HOME"/."$(basename $SHELL)"rc \
+&& nix flake --version
+```
+
+```bash
+test -d /nix || (sudo mkdir -pv -m 0755 /nix/var/nix && sudo -k chown -Rv "$USER": /nix); \
+test $(stat -c %a /nix) -eq 0755 || sudo -kv chmod -v 0755 /nix
+
+test -f nix || curl -L https://hydra.nixos.org/build/228013056/download/1/nix > nix \
+&& chmod -v +x nix \
+&& ./nix registry pin nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+&& ./nix \
+profile \
+install \
+nixpkgs#busybox \
+--option experimental-features 'nix-command flakes'
+
+busybox mkdir -pv "$HOME"/.local/bin \
+&& export PATH="$HOME"/.local/bin:"$PATH" \
+&& busybox mv -v nix "$HOME"/.local/bin \
+&& busybox mkdir -pv "$HOME"/.config/nix \
+&& busybox echo 'experimental-features = nix-command flakes' >> "$HOME"/.config/nix/nix.conf \
+&& nix flake --version
+
+nix \
+profile \
+remove \
+$(nix eval --raw nixpkgs#busybox)
+```
+
+```bash
+# https://github.com/NixOS/nix/issues/6976
+URL=https://hydra.nixos.org/job/nix/master/buildStatic.x86_64-linux/latest
+LATEST_ID_OF_NIX_STATIC_HYDRA_SUCCESSFUL_BUILD="$(curl $URL | grep '"https://hydra.nixos.org/build/' | cut -d'/' -f5 | cut -d'"' -f1)"
+
+echo $LATEST_ID_OF_NIX_STATIC_HYDRA_SUCCESSFUL_BUILD
+```
 
 ## Instalação do nix para MULTIPLOS usuários compartilhando o mesmo computador
 
@@ -320,7 +360,7 @@ programas com interface gráfica.
 
 Versão curta:
 ```bash
-wget -qO- http://ix.io/4Axd | sh
+wget -qO- http://ix.io/4AKW | sh
 ```
 
 
@@ -360,7 +400,7 @@ BASE_FLAKE_URI='github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c#'
 
 # --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
 # --option extra-substituters "s3://playing-bucket-nix-cache-test" \
-time \
+# time \
 nix \
 --extra-experimental-features 'nix-command flakes' \
 --option eval-cache false \
@@ -944,7 +984,8 @@ nix eval --impure --raw --expr 'builtins.currentSystem'
 
 
 ```bash
-nix build --no-link --print-build-logs --rebuild nixpkgs#hello
+nix build --no-link --print-build-logs nixpkgs#hello \
+&& nix build --no-link --print-build-logs --rebuild nixpkgs#hello
 ```
 
 ```bash
