@@ -2,12 +2,47 @@
   description = "Home Manager configuration";
 
   inputs = {
-    # Specify the source of Home Manager and Nixpkgs
-    # nix flake metadata github:nix-community/home-manager/release-22.11
-    home-manager.url = "github:nix-community/home-manager/b372d7f8d5518aaba8a4058a453957460481afbc";
+    /*
+    Specify the source of Home Manager and Nixpkgs
+    nix flake metadata github:nix-community/home-manager/release-22.11
 
-    # nix flake metadata github:nixos/nixpkgs/release-22.11
-    nixpkgs.url = "github:nixos/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c";
+    # nix \
+    # flake \
+    # update \
+    # --override-input nixpkgs github:NixOS/nixpkgs/$(nix eval --impure --raw --expr '(builtins.getFlake "github:NixOS/nixpkgs/release-23.05").rev')
+
+    # nix \
+    # flake \
+    # update \
+    # --override-input home-manager github:nix-community/home-manager/$(nix eval --impure --raw --expr '(builtins.getFlake "github:nix-community/home-manager/release-23.05").rev')
+
+    # nix \
+    # flake \
+    # update \
+    # --override-input nixpkgs github:NixOS/nixpkgs/$(nix eval --impure --raw --expr '(builtins.getFlake "github:NixOS/nixpkgs/release-23.05").rev')
+
+    nix flake update \
+    --override-input home-manager github:nix-community/home-manager/$(nix eval --impure --raw --expr '(builtins.getFlake "github:nix-community/home-manager/release-23.05").rev') \
+    --override-input nixpkgs github:NixOS/nixpkgs/$(nix eval --impure --raw --expr '(builtins.getFlake "github:NixOS/nixpkgs/release-23.05").rev')
+
+    # 22.11
+    nix flake lock \
+    --override-input nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b \
+    --override-input home-manager github:nix-community/home-manager/b372d7f8d5518aaba8a4058a453957460481afbc
+
+    # https://channels.nix.gsc.io/nixos-22.11/history
+    nix flake lock \
+    --override-input nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+    --override-input home-manager github:nix-community/home-manager/b372d7f8d5518aaba8a4058a453957460481afbc
+
+    nix flake lock \
+    --override-input nixpkgs github:NixOS/nixpkgs/$(nix eval --impure --raw --expr '(builtins.getFlake "github:NixOS/nixpkgs/release-23.05").rev') \
+    --override-input home-manager github:nix-community/home-manager/$(nix eval --impure --raw --expr '(builtins.getFlake "github:nix-community/home-manager/release-23.05").rev')
+
+    */
+    home-manager.url = "github:nix-community/home-manager";
+
+    nixpkgs.url = "github:nixos/nixpkgs";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -34,6 +69,7 @@
               # https://discourse.nixos.org/t/correct-way-to-use-nixpkgs-in-nix-shell-on-flake-based-system-without-channels/19360/3
               # sessionVariables.NIX_PATH = "nixpkgs=nixpkgs=flake:?";
               sessionVariables.NIX_PATH = "nixpkgs=${nixpkgs.outPath}";
+              enableNixpkgsReleaseCheck = true;
             };
             programs.home-manager.enable = true;
           }

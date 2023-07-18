@@ -65,7 +65,7 @@ Basta atualizar o hash/id da instalação.
 
 </details>
 
-### Experimental, nix estaticamente compilado, usando /nix
+### Quebrado! Experimental, nix estaticamente compilado, usando /nix
 
 ```bash
 wget -qO- http://ix.io/4AL6 | sh \
@@ -362,7 +362,8 @@ Versão curta:
 ```bash
 wget -qO- http://ix.io/4AKW | sh
 ```
-
+http://ix.io/4ATD
+http://ix.io/4ATX
 
 <details>
   <summary>Versão longa (click para expandir):</summary>
@@ -433,7 +434,9 @@ bash <<-EOF
     && git init \
     && git status \
     && git add . \
-    && nix flake update --override-input nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+    && nix flake lock \
+          --override-input nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+          --override-input home-manager github:nix-community/home-manager/b372d7f8d5518aaba8a4058a453957460481afbc \
     && git status \
     && git add . \
     && git commit -m 'First nix home-manager commit from installer'
