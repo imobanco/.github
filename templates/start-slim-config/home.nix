@@ -503,11 +503,17 @@
     };
   };
 
+  # since we set PAGER to this above, make sure it's installed
+  programs.less.enable = true;
+  # programs.less.envVariables.PAGER = "foo-bar";
+
   nixpkgs.config = {
     allowBroken = false;
     allowUnfree = true;
     # TODO: test it
     # android_sdk.accept_license = true;
+
+    # allowUnfreePredicate = (pkg: true);
   };
 
   services.systembus-notify.enable = true;
@@ -582,6 +588,8 @@
       # ZSH_AUTOSUGGEST_USE_ASYNC="true";
       # ZSH_AUTOSUGGEST_MANUAL_REBIND="true";
       # PROMPT="|%F{153}%n@%m%f|%F{174}%1~%f> ";
+
+      # PAGER = "less";
 
       LANG = "en_US.utf8";
       # fc-match list
