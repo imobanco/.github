@@ -503,6 +503,7 @@
     };
   };
 
+  # TODO: terminar de testar
   # since we set PAGER to this above, make sure it's installed
   programs.less.enable = true;
   # programs.less.envVariables.PAGER = "foo-bar";
