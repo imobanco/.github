@@ -592,6 +592,8 @@
 
       # PAGER = "less";
 
+      CUSTOM_ENVIROMENT_VARIABLE = "Foo-101-Bar";
+
       LANG = "en_US.utf8";
       # fc-match list
       FONTCONFIG_FILE = "${pkgs.fontconfig.out}/etc/fonts/fonts.conf";
