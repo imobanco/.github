@@ -99,6 +99,7 @@ remove \
 $(nix eval --raw nixpkgs#busybox)
 ```
 
+
 ```bash
 # https://github.com/NixOS/nix/issues/6976
 URL=https://hydra.nixos.org/job/nix/master/buildStatic.x86_64-linux/latest
@@ -112,7 +113,19 @@ echo $LATEST_ID_OF_NIX_STATIC_HYDRA_SUCCESSFUL_BUILD
 
 Versão curta:
 ```bash
-wget -qO- http://ix.io/4w9r | sh
+
+podman \
+exec \
+--interactive=true \
+--tty=true \
+--user=abcuser \
+--workdir=/home/abcuser \
+test-fedora39-systemd \
+bash \
+-c \
+'
+wget -qO- http://ix.io/4Blu || curl -L http://ix.io/4Blu | sh
+'
 ```
 
 Notas:
@@ -145,7 +158,8 @@ NAME_SHELL=$(basename $SHELL) \
 && . "$HOME"/."$NAME_SHELL"rc \
 && . "$HOME"/.profile \
 && nix flake --version \
-&& nix --extra-experimental-features 'nix-command flakes' profile install -vvv nixpkgs#direnv nixpkgs#git \
+&& nix --extra-experimental-features 'nix-command flakes' -vv registry pin nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+&& nix --extra-experimental-features 'nix-command flakes' profile install -vv nixpkgs#direnv nixpkgs#git \
 && . "$HOME"/."$NAME_SHELL"rc \
 && . "$HOME"/.profile
 COMMANDS
@@ -360,10 +374,12 @@ programas com interface gráfica.
 
 Versão curta:
 ```bash
-wget -qO- http://ix.io/4AKW | sh
+# http://ix.io/4AKW
+# http://ix.io/4ATD
+wget -qO- http://ix.io/4ATX || curl -L http://ix.io/4ATX | sh
 ```
-http://ix.io/4ATD
-http://ix.io/4ATX
+
+
 
 <details>
   <summary>Versão longa (click para expandir):</summary>
