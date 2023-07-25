@@ -14,7 +14,7 @@ git clone git@github.com:PedroRegisPOAR/.github.git \
 
 Versão curta: para linux
 ```bash
-wget -qO- http://ix.io/4vCI | sh \
+wget -qO- http://ix.io/4Bqe || curl -L http://ix.io/4Bqe | sh \
 && . "$HOME"/."$(basename $SHELL)"rc \
 && nix flake --version
 ```
@@ -45,7 +45,7 @@ NAME_SHELL=$(basename $SHELL) \
 && . "$HOME"/."$NAME_SHELL"rc \
 && . "$HOME"/.profile \
 && nix flake --version \
-&& nix --extra-experimental-features 'nix-command flakes' -vv registry pin nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+&& nix --extra-experimental-features 'nix-command flakes' -vv registry pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b \
 && nix --extra-experimental-features 'nix-command flakes' -vv profile install nixpkgs#direnv nixpkgs#git \
 && . "$HOME"/."$NAME_SHELL"rc \
 && . "$HOME"/.profile
@@ -79,7 +79,7 @@ test $(stat -c %a /nix) -eq 0755 || sudo -kv chmod -v 0755 /nix
 
 test -f nix || curl -L https://hydra.nixos.org/build/228013056/download/1/nix > nix \
 && chmod -v +x nix \
-&& ./nix registry pin nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+&& ./nix registry pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b \
 && ./nix \
 profile \
 install \
@@ -158,7 +158,7 @@ NAME_SHELL=$(basename $SHELL) \
 && . "$HOME"/."$NAME_SHELL"rc \
 && . "$HOME"/.profile \
 && nix flake --version \
-&& nix --extra-experimental-features 'nix-command flakes' -vv registry pin nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+&& nix --extra-experimental-features 'nix-command flakes' -vv registry pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b \
 && nix --extra-experimental-features 'nix-command flakes' profile install -vv nixpkgs#direnv nixpkgs#git \
 && . "$HOME"/."$NAME_SHELL"rc \
 && . "$HOME"/.profile
@@ -266,7 +266,7 @@ curl -L http://ix.io/4vEW | sh
 
 Após abrir o terminal:
 ```bash
-nix registry pin github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c
+nix registry pin github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b
 ```
 
 
@@ -376,9 +376,8 @@ Versão curta:
 ```bash
 # http://ix.io/4AKW
 # http://ix.io/4ATD
-wget -qO- http://ix.io/4ATX || curl -L http://ix.io/4ATX | sh
+wget -qO- http://ix.io/4Bqg || curl -L http://ix.io/4Bqg | sh
 ```
-
 
 
 <details>
@@ -387,6 +386,7 @@ wget -qO- http://ix.io/4ATX || curl -L http://ix.io/4ATX | sh
 ```bash
 # Precisa das variáveis de ambiente USER e HOME
 # export DUMMY_USER="$(id -un)"
+# TODO: checar se $USER tem alguma string, caso não  pelo menos imprimir logs
 export DUMMY_USER="$USER"
 DIRECTORY_TO_CLONE=/home/"$USER"/.config/nixpkgs
 
@@ -413,7 +413,7 @@ export DUMMY_HOSTNAME="$(hostname)"
 HM_ATTR_FULL_NAME='"'"$DUMMY_USER"-"$DUMMY_HOSTNAME"'"'
 FLAKE_ATTR="$DIRECTORY_TO_CLONE""#homeConfigurations."'\"'"$HM_ATTR_FULL_NAME"'\"'".activationPackage"
 
-BASE_FLAKE_URI='github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c#'
+BASE_FLAKE_URI='github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b#'
 
 # --option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
 # --option extra-substituters "s3://playing-bucket-nix-cache-test" \
@@ -451,7 +451,7 @@ bash <<-EOF
     && git status \
     && git add . \
     && nix flake lock \
-          --override-input nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+          --override-input nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b \
           --override-input home-manager github:nix-community/home-manager/b372d7f8d5518aaba8a4058a453957460481afbc \
     && git status \
     && git add . \
