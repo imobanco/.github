@@ -12,7 +12,7 @@
 
     # https://channels.nix.gsc.io/nixos-22.11/history
     nix flake lock \
-    --override-input nixpkgs github:NixOS/nixpkgs/0938d73bb143f4ae037143572f11f4338c7b2d1c \
+    --override-input nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b \
     --override-input home-manager github:nix-community/home-manager/b372d7f8d5518aaba8a4058a453957460481afbc
 
     nix flake lock \
