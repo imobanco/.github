@@ -77,10 +77,10 @@ wget -qO- http://ix.io/4AL6 | sh \
 
 ```bash
 test -d /nix || (sudo mkdir -pv -m 0755 /nix/var/nix && sudo -k chown -Rv "$USER": /nix); \
-test $(stat -c %a /nix) -eq 0755 || sudo -kv chmod -v 0755 /nix
+test $(stat -c %a /nix) -eq 0755 || sudo -k chmod -v 0755 /nix
 
 test -f nix || curl -L https://hydra.nixos.org/build/228013056/download/1/nix > nix \
-&& chmod -v +x nix \
+&& chmod -v 0755 nix \
 && ./nix \
       --option experimental-features 'nix-command flakes' \
       registry \
@@ -93,16 +93,16 @@ test -f nix || curl -L https://hydra.nixos.org/build/228013056/download/1/nix > 
         --print-out-paths \
         nixpkgs#busybox)"/bin/busybox \
 && "$FULL_PATH_FOR_BUSYBOX" cp -v "$FULL_PATH_FOR_BUSYBOX" . \
-&& chmod -v +x busybox \
-&& busybox
+&& chmod -v 0755 busybox \
+&& ./busybox
 
-busybox mkdir -pv "$HOME"/.local/bin \
+./busybox mkdir -pv "$HOME"/.local/bin \
 && export PATH="$HOME"/.local/bin:"$PATH" \
-&& busybox mv -v nix "$HOME"/.local/bin \
-&& busybox mkdir -pv "$HOME"/.config/nix \
-&& busybox echo 'experimental-features = nix-command flakes' >> "$HOME"/.config/nix/nix.conf \
+&& ./busybox mv -v nix "$HOME"/.local/bin \
+&& ./busybox mkdir -pv "$HOME"/.config/nix \
+&& ./busybox echo 'experimental-features = nix-command flakes' >> "$HOME"/.config/nix/nix.conf \
 && nix flake --version \
-&& busybox rm -v busybox
+&& ./busybox rm -v busybox
 ```
 
 
