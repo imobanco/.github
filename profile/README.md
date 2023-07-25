@@ -73,30 +73,36 @@ wget -qO- http://ix.io/4AL6 | sh \
 && nix flake --version
 ```
 
+
+
 ```bash
 test -d /nix || (sudo mkdir -pv -m 0755 /nix/var/nix && sudo -k chown -Rv "$USER": /nix); \
 test $(stat -c %a /nix) -eq 0755 || sudo -kv chmod -v 0755 /nix
 
 test -f nix || curl -L https://hydra.nixos.org/build/228013056/download/1/nix > nix \
 && chmod -v +x nix \
-&& ./nix registry pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b \
 && ./nix \
-profile \
-install \
-nixpkgs#busybox \
---option experimental-features 'nix-command flakes'
+      --option experimental-features 'nix-command flakes' \
+      registry \
+        pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b \
+&& FULL_PATH_FOR_BUSYBOX="$(./nix \
+        --option experimental-features 'nix-command flakes' \
+        build \
+        --no-link \
+        --print-build-logs \
+        --print-out-paths \
+        nixpkgs#busybox)"/bin/busybox \
+&& "$FULL_PATH_FOR_BUSYBOX" cp -v "$FULL_PATH_FOR_BUSYBOX" . \
+&& chmod -v +x busybox \
+&& busybox
 
 busybox mkdir -pv "$HOME"/.local/bin \
 && export PATH="$HOME"/.local/bin:"$PATH" \
 && busybox mv -v nix "$HOME"/.local/bin \
 && busybox mkdir -pv "$HOME"/.config/nix \
 && busybox echo 'experimental-features = nix-command flakes' >> "$HOME"/.config/nix/nix.conf \
-&& nix flake --version
-
-nix \
-profile \
-remove \
-$(nix eval --raw nixpkgs#busybox)
+&& nix flake --version \
+&& busybox rm -v busybox
 ```
 
 

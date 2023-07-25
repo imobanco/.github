@@ -278,12 +278,34 @@
       ''
     )
 
-    (
-      writeScriptBin "nfm" ''
-        #! ${pkgs.runtimeShell} -e
-        nix flake metadata $1 --json | jq -r '.url'
-      ''
-    )
+     (
+       writeScriptBin "nfmn" ''
+         #! ${pkgs.runtimeShell} -e
+         nix flake metadata nixpkgs
+       ''
+     )
+
+     (
+       writeScriptBin "nfm" ''
+         #! ${pkgs.runtimeShell} -e
+         nix flake metadata $1
+       ''
+     )
+
+
+     (
+       writeScriptBin "nfmn-j" ''
+         #! ${pkgs.runtimeShell} -e
+         nix flake metadata nixpkgs --json | jq -r '.url'
+       ''
+     )
+
+     (
+       writeScriptBin "nfm-j" ''
+         #! ${pkgs.runtimeShell} -e
+         nix flake metadata $1 --json | jq -r '.url'
+       ''
+     )
 
     (
       writeScriptBin "hms" ''
