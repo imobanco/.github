@@ -117,8 +117,45 @@ echo $LATEST_ID_OF_NIX_STATIC_HYDRA_SUCCESSFUL_BUILD
 ## Instalação do nix para MULTIPLOS usuários compartilhando o mesmo computador
 
 
-Versão curta:
+Para ajudar a testar:
 ```bash
+cat << 'EOF' >> Dockerfile
+FROM docker.io/library/fedora:39
+
+# RUN dnf -y install httpd; dnf clean all; systemctl enable httpd
+RUN dnf -y install hostname systemd xz
+
+RUN groupadd abcgroup \
+ && adduser \
+     --comment '"An unprivileged user with an group"' \
+     --gid abcgroup \
+     --uid 3322 \
+     abcuser \
+ && echo 'abcuser ALL=(ALL) NOPASSWD:SETENV: ALL' > /etc/sudoers.d/abcuser \
+ && usermod --append --groups kvm abcuser
+
+EXPOSE 80
+
+CMD [ "/sbin/init" ]
+EOF
+
+podman build --tag fedora39-systemd .
+
+podman kill test-fedora39-systemd \
+&& podman rm --force test-fedora39-systemd || true \
+&& podman \
+run \
+--env="USER=abcuser" \
+--detach=true \
+--name=test-fedora39-systemd \
+--interactive=true \
+--tty=true \
+--privileged=true \
+--publish=8080:80 \
+--rm=true \
+fedora39-systemd \
+&& podman ps
+
 
 podman \
 exec \
@@ -130,8 +167,76 @@ test-fedora39-systemd \
 bash \
 -c \
 '
-wget -qO- http://ix.io/4Blu || curl -L http://ix.io/4Blu | sh
+systemctl status swap.target \
+&& systemctl status dbus.socket \
+&& systemctl status system.slice \
+&& systemctl status user.slice
 '
+
+podman \
+exec \
+--interactive=true \
+--tty=true \
+--user=abcuser \
+--workdir=/home/abcuser \
+test-fedora39-systemd \
+bash \
+-c \
+'
+wget -qO- http://ix.io/4Bqe || curl -L http://ix.io/4Bqe | sh \
+&& . "$HOME"/."$(basename $SHELL)"rc \
+&& nix flake --version
+'
+
+podman \
+exec \
+--interactive=true \
+--tty=true \
+--user=abcuser \
+--workdir=/home/abcuser \
+test-fedora39-systemd \
+bash \
+-c \
+'
+wget -qO- http://ix.io/4Bqe || curl -L http://ix.io/4Bqe | sh \
+&& . "$HOME"/."$(basename $SHELL)"rc
+wget -qO- http://ix.io/4Bqg || curl -L http://ix.io/4Bqg | sh
+hms
+nix store gc -v && nix store optimise -v 
+'
+
+#podman \
+#exec \
+#--interactive=true \
+#--tty=true \
+#--user=abcuser \
+#--workdir=/home/abcuser \
+#test-fedora39-systemd \
+#bash \
+#-c \
+#'
+#. "$HOME"/."$(basename $SHELL)"rc
+#wget -qO- http://ix.io/4Bqg || curl -L http://ix.io/4Bqg | sh
+#'
+#
+#podman \
+#exec \
+#--interactive=true \
+#--tty=true \
+#--user=abcuser \
+#--workdir=/home/abcuser \
+#test-fedora39-systemd \
+#bash
+
+
+podman \
+exec \
+--interactive=true \
+--tty=true \
+--user=abcuser \
+--workdir=/home/abcuser \
+test-fedora39-systemd \
+.nix-profile/bin/zsh
 ```
 
 Notas:
