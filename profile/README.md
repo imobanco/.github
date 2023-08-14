@@ -1328,22 +1328,21 @@ ssh-keygen -R '[localhost]:10022'
 # Oh crap, it made me wast many many days
 ssh-add id_ed25519
 
+#--option eval-cache false \
+#--option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
+#--option extra-substituters "s3://playing-bucket-nix-cache-test" \
+# --max-jobs 0 \
 nix \
---option eval-cache false \
---option extra-trusted-public-keys binarycache-1:XiPHS/XT/ziMHu5hGoQ8Z0K88sa1Eqi5kFTYyl33FJg= \
---option extra-substituters "s3://playing-bucket-nix-cache-test" \
 build \
---keep-failed \
---max-jobs 0 \
 --no-link \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/c5ff24579ff2dfe933e517660ab218e8bacfe9e1#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/5fdcccc4e3bc00d160850dfafb0bf2b22e1060dc#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 nix \
 run \
-github:PedroRegisPOAR/.github/c5ff24579ff2dfe933e517660ab218e8bacfe9e1#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
+github:PedroRegisPOAR/.github/5fdcccc4e3bc00d160850dfafb0bf2b22e1060dc#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
 < /dev/null &
 
 
@@ -1365,7 +1364,15 @@ nixuser@localhost \
 Refs.:
 - https://stackoverflow.com/questions/20840012/ssh-remote-host-identification-has-changed#comment89964721_23150466
 
-
+mkdir -pv "$HOME"/.local/bin \
+&& export PATH="$HOME"/.local/bin:"$PATH" \
+&& curl -L https://hydra.nixos.org/build/228013056/download/1/nix > nix \
+&& mv nix "$HOME"/.local/bin \
+&& chmod +x "$HOME"/.local/bin/nix \
+&& mkdir -pv "$HOME"/.config/nix \
+&& echo 'experimental-features = nix-command flakes' >> "$HOME"/.config/nix/nix.conf \
+&& nix flake --version \
+&& nix registry pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b
 ```bash
 export CONTAINER_HOST=ssh://nixuser@localhost:10022/run/user/1234/podman/podman.sock
 
