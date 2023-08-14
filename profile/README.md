@@ -1300,7 +1300,7 @@ mkdir -pv ~/sandbox/sandbox && cd $_
 export HOST_MAPPED_PORT=10022
 export REMOVE_DISK=true
 export QEMU_NET_OPTS='hostfwd=tcp::'"$HOST_MAPPED_PORT"'-:'"$HOST_MAPPED_PORT"',hostfwd=tcp::8000-:8000'
-export QEMU_OPTS='-nographic'
+# export QEMU_OPTS='-nographic'
 export SHARED_DIR="$(pwd)"
 
 "$REMOVE_DISK" && rm -fv nixos.qcow2
@@ -1338,11 +1338,11 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/5fdcccc4e3bc00d160850dfafb0bf2b22e1060dc#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/6dabb7d4dfb72a7cde43cbd3f77f9cdf5a99726e#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 nix \
 run \
-github:PedroRegisPOAR/.github/5fdcccc4e3bc00d160850dfafb0bf2b22e1060dc#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
+github:PedroRegisPOAR/.github/6dabb7d4dfb72a7cde43cbd3f77f9cdf5a99726e#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
 < /dev/null &
 
 
@@ -1378,6 +1378,10 @@ mkdir -pv "$HOME"/.local/bin \
 ```
 
 ```bash
+ssh-keygen -R '[localhost]:10022'
+# Oh crap, it made me wast many many days
+ssh-add id_ed25519
+
 export CONTAINER_HOST=ssh://nixuser@localhost:10022/run/user/1234/podman/podman.sock
 
 podman run -it --rm docker.io/library/alpine sh -c 'cat /etc/os-*release'
