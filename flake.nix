@@ -139,11 +139,11 @@
 
                 virtualisation = {
                   # following configuration is added only when building VM with build-vm
-                  memorySize = 3072; # Use MiB memory.
+                  memorySize = 3*1024; # Use MiB memory.
 
                   # nixos-disk-image> ERROR: cptofs failed. diskSize might be too small for closure.
                   diskSize = 15*1024; # Use MiB memory.
-                  cores = 7; # Simulate 3 cores.
+                  cores = 7; # Simulate/Emulates number of cores.
                   #
                   podman.enable = true;
 
@@ -176,7 +176,7 @@
                   readOnlyStore = true;
                 };
 
-                boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+                # boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
                 # Enable the X11 windowing system.
                 services.xserver = {
@@ -347,11 +347,11 @@
 
                 virtualisation = {
                   # following configuration is added only when building VM with build-vm
-                  memorySize = 3072; # Use MiB memory.
+                  memorySize = 3*1024; # Use MiB memory.
 
                   # nixos-disk-image> ERROR: cptofs failed. diskSize might be too small for closure.
                   diskSize = 15*1024; # Use MiB memory.
-                  cores = 7; # Simulate 3 cores.
+                  cores = 7; # Simulate/Emulates number of cores.
                   #
                   podman.enable = true;
 
@@ -555,7 +555,7 @@
                   # following configuration is added only when building VM with build-vm
                   memorySize = 3072; # Use MiB memory.
                   diskSize = 4096; # Use MiB memory.
-                  cores = 7; # Simulate 3 cores.
+                  cores = 7; # Simulate/Emulates number of cores.
                   #
                   docker.enable = true;
 
@@ -735,7 +735,7 @@
 
                   virtualisation = {
                     # following configuration is added only when building VM with build-vm
-                    memorySize = 3072; # Use MiB memory.
+                    memorySize = 3 * 16; # Use MiB memory.
                     diskSize = 1024 * 16; # Use MiB memory.
                     cores = 6; # Simulate 6 cores.
 

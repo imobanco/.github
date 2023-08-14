@@ -1364,6 +1364,8 @@ nixuser@localhost \
 Refs.:
 - https://stackoverflow.com/questions/20840012/ssh-remote-host-identification-has-changed#comment89964721_23150466
 
+
+```bash
 mkdir -pv "$HOME"/.local/bin \
 && export PATH="$HOME"/.local/bin:"$PATH" \
 && curl -L https://hydra.nixos.org/build/228013056/download/1/nix > nix \
@@ -1373,6 +1375,8 @@ mkdir -pv "$HOME"/.local/bin \
 && echo 'experimental-features = nix-command flakes' >> "$HOME"/.config/nix/nix.conf \
 && nix flake --version \
 && nix registry pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b
+```
+
 ```bash
 export CONTAINER_HOST=ssh://nixuser@localhost:10022/run/user/1234/podman/podman.sock
 
