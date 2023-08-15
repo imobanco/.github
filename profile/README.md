@@ -1366,6 +1366,20 @@ Refs.:
 
 
 ```bash
+ssh-keygen -R '[localhost]:10022'
+# Oh crap, it made me wast many many days
+ssh-add id_ed25519
+
+export CONTAINER_HOST=ssh://nixuser@localhost:10022/run/user/1234/podman/podman.sock
+
+podman run -it --rm docker.io/library/alpine sh -c 'cat /etc/os-*release'
+```
+Refs.:
+- 
+
+
+
+```bash
 mkdir -pv "$HOME"/.local/bin \
 && export PATH="$HOME"/.local/bin:"$PATH" \
 && curl -L https://hydra.nixos.org/build/228013056/download/1/nix > nix \
@@ -1377,17 +1391,7 @@ mkdir -pv "$HOME"/.local/bin \
 && nix registry pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b
 ```
 
-```bash
-ssh-keygen -R '[localhost]:10022'
-# Oh crap, it made me wast many many days
-ssh-add id_ed25519
 
-export CONTAINER_HOST=ssh://nixuser@localhost:10022/run/user/1234/podman/podman.sock
-
-podman run -it --rm docker.io/library/alpine sh -c 'cat /etc/os-*release'
-```
-Refs.:
-- 
 
 
 ```bash

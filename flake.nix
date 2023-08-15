@@ -94,7 +94,7 @@
                   ];
                   packages = with pkgs; [
                     direnv
-                    gitFull
+                    git
                     xorg.xclock
                     file
                     btop
@@ -142,7 +142,7 @@
                   memorySize = 3*1024; # Use MiB memory.
 
                   # nixos-disk-image> ERROR: cptofs failed. diskSize might be too small for closure.
-                  diskSize = 15*1024; # Use MiB memory.
+                  diskSize = 19*1024; # Use MiB memory.
                   cores = 7; # Simulate/Emulates number of cores.
                   #
                   podman.enable = true;
