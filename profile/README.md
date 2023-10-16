@@ -14,7 +14,7 @@ git clone git@github.com:PedroRegisPOAR/.github.git \
 
 Versão curta: para linux
 ```bash
-wget -qO- http://ix.io/4Bqe || curl -L http://ix.io/4Bqe | sh \
+wget -qO- http://ix.io/4Bqe sh || curl -L http://ix.io/4Bqe | sh \
 && . "$HOME"/."$(basename $SHELL)"rc \
 && nix flake --version
 ```
@@ -65,46 +65,94 @@ Basta atualizar o hash/id da instalação.
 
 </details>
 
-### Quebrado! Experimental, nix estaticamente compilado, usando /nix
+### Experimental, nix estaticamente compilado, usando /nix
 
+
+
+Versão curta:
 ```bash
-wget -qO- http://ix.io/4AL6 | sh \
-&& . "$HOME"/."$(basename $SHELL)"rc \
+wget -qO- http://ix.io/4Jaq | sh \
+&& . "$HOME"/.profile \
 && nix flake --version
 ```
 
 
+<details>
+  <summary>Versão longa (click para expandir):</summary>
 
 ```bash
 test -d /nix || (sudo mkdir -pv -m 0755 /nix/var/nix && sudo -k chown -Rv "$USER": /nix); \
 test $(stat -c %a /nix) -eq 0755 || sudo -k chmod -v 0755 /nix
 
-test -f nix || curl -L https://hydra.nixos.org/build/228013056/download/1/nix > nix \
-&& chmod -v 0755 nix \
-&& ./nix \
-      --option experimental-features 'nix-command flakes' \
-      registry \
-        pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b \
-&& FULL_PATH_FOR_BUSYBOX="$(./nix \
-        --option experimental-features 'nix-command flakes' \
-        build \
-        --no-link \
-        --print-build-logs \
-        --print-out-paths \
-        nixpkgs#busybox)"/bin/busybox \
-&& "$FULL_PATH_FOR_BUSYBOX" cp -v "$FULL_PATH_FOR_BUSYBOX" . \
-&& chmod -v 0755 busybox \
-&& ./busybox
+test -f nix || curl -L https://hydra.nixos.org/build/237228729/download/2/nix > nix && chmod -v +x nix
+test -f nix || wget https://hydra.nixos.org/build/237228729/download/2/nix && chmod -v +x nix
 
-./busybox mkdir -pv "$HOME"/.local/bin \
-&& export PATH="$HOME"/.local/bin:"$PATH" \
-&& ./busybox mv -v nix "$HOME"/.local/bin \
-&& ./busybox mkdir -pv "$HOME"/.config/nix \
-&& ./busybox echo 'experimental-features = nix-command flakes' >> "$HOME"/.config/nix/nix.conf \
+./nix \
+--option experimental-features 'nix-command flakes' \
+registry \
+pin \
+nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b
+
+./nix \
+--option experimental-features 'nix-command flakes' \
+shell \
+--ignore-environment \
+--keep HOME \
+--keep USER \
+nixpkgs#busybox-sandbox-shell \
+nixpkgs#toybox \
+-c \
+sh<<'COMMANDS'
+toybox echo $HOME
+toybox echo $USER
+
+type cd \
+&& type echo \
+&& type export \
+&& type type
+
+toybox mkdir -pv "$HOME"/.local/bin \
+&& toybox mv -v nix "$HOME"/.local/bin \
+&& cd "$HOME"/.local/bin \
+&& toybox ln -sfv nix nix-build \
+&& toybox ln -sfv nix nix-channel \
+&& toybox ln -sfv nix nix-collect-garbage \
+&& toybox ln -sfv nix nix-copy-closure \
+&& toybox ln -sfv nix nix-daemon \
+&& toybox ln -sfv nix nix-env \
+&& toybox ln -sfv nix nix-hash \
+&& toybox ln -sfv nix nix-instantiate \
+&& toybox ln -sfv nix nix-prefetch-url \
+&& toybox ln -sfv nix nix-shell \
+&& toybox ln -sfv nix nix-store \
+&& cd \
+&& toybox mkdir -pv "$HOME"/.config/nix \
+&& toybox grep 'experimental-features' "$HOME"/.config/nix/nix.conf -q || (toybox echo 'experimental-features = nix-command flakes' >> "$HOME"/.config/nix/nix.conf) \
+&& toybox grep '.local' "$HOME"/.profile -q || (echo 'export PATH="$HOME"/.nix-profile/bin:"$HOME"/.local/bin:"$PATH"' >> "$HOME"/.profile)
+COMMANDS
+
+. "$HOME"/.profile \
 && nix flake --version \
-&& ./busybox rm -v busybox
+&& nix flake metadata nixpkgs
 ```
 
+Para criar a versão curta, crie um arquivo e copie e cole o bloco de código acima no arquivo.
+```bash
+nano arquivo.txt
+```
+
+Após salvar e fechar o arquivo:
+```bash
+cat arquivo.txt | curl -F 'f:1=<-' ix.io
+```
+
+Basta atualizar o hash/id da instalação.
+
+</details>
+
+
+<details>
+  <summary>Como obter id do latest build que obteve sucesso no hydra? (click para expandir):</summary>
 
 ```bash
 # https://github.com/NixOS/nix/issues/6976
@@ -114,134 +162,18 @@ LATEST_ID_OF_NIX_STATIC_HYDRA_SUCCESSFUL_BUILD="$(curl $URL | grep '"https://hyd
 echo $LATEST_ID_OF_NIX_STATIC_HYDRA_SUCCESSFUL_BUILD
 ```
 
+</details>
+
 ## Instalação do nix para MULTIPLOS usuários compartilhando o mesmo computador
 
 
-Para ajudar a testar:
+Versão curta:
 ```bash
-cat << 'EOF' >> Dockerfile
-FROM docker.io/library/fedora:39
-
-# RUN dnf -y install httpd; dnf clean all; systemctl enable httpd
-RUN dnf -y install hostname systemd xz
-
-RUN groupadd abcgroup \
- && adduser \
-     --comment '"An unprivileged user with an group"' \
-     --gid abcgroup \
-     --uid 3322 \
-     abcuser \
- && echo 'abcuser ALL=(ALL) NOPASSWD:SETENV: ALL' > /etc/sudoers.d/abcuser \
- && usermod --append --groups kvm abcuser
-
-EXPOSE 80
-
-CMD [ "/sbin/init" ]
-EOF
-
-podman build --tag fedora39-systemd .
-
-podman kill test-fedora39-systemd \
-&& podman rm --force test-fedora39-systemd || true \
-&& podman \
-run \
---env="USER=abcuser" \
---detach=true \
---name=test-fedora39-systemd \
---interactive=true \
---tty=true \
---privileged=true \
---publish=8080:80 \
---rm=true \
-fedora39-systemd \
-&& podman ps
-
-
-podman \
-exec \
---interactive=true \
---tty=true \
---user=abcuser \
---workdir=/home/abcuser \
-test-fedora39-systemd \
-bash \
--c \
-'
-systemctl status swap.target \
-&& systemctl status dbus.socket \
-&& systemctl status system.slice \
-&& systemctl status user.slice
-'
-
-podman \
-exec \
---interactive=true \
---tty=true \
---user=abcuser \
---workdir=/home/abcuser \
-test-fedora39-systemd \
-bash \
--c \
-'
-wget -qO- http://ix.io/4Bqe || curl -L http://ix.io/4Bqe | sh \
-&& . "$HOME"/."$(basename $SHELL)"rc \
-&& nix flake --version
-'
-
-podman \
-exec \
---interactive=true \
---tty=true \
---user=abcuser \
---workdir=/home/abcuser \
-test-fedora39-systemd \
-bash \
--c \
-'
-wget -qO- http://ix.io/4Bqe || curl -L http://ix.io/4Bqe | sh \
-&& . "$HOME"/."$(basename $SHELL)"rc
-wget -qO- http://ix.io/4Bqg || curl -L http://ix.io/4Bqg | sh
-hms
-nix store gc -v && nix store optimise -v 
-'
-
-#podman \
-#exec \
-#--interactive=true \
-#--tty=true \
-#--user=abcuser \
-#--workdir=/home/abcuser \
-#test-fedora39-systemd \
-#bash \
-#-c \
-#'
-#. "$HOME"/."$(basename $SHELL)"rc
-#wget -qO- http://ix.io/4Bqg || curl -L http://ix.io/4Bqg | sh
-#'
-#
-#podman \
-#exec \
-#--interactive=true \
-#--tty=true \
-#--user=abcuser \
-#--workdir=/home/abcuser \
-#test-fedora39-systemd \
-#bash
-
-
-podman \
-exec \
---interactive=true \
---tty=true \
---user=abcuser \
---workdir=/home/abcuser \
-test-fedora39-systemd \
-.nix-profile/bin/zsh
+CURL_OR_WGET_OR_ERROR=$((curl -V &> /dev/null && echo curl -L) || (wget -V &> /dev/null && echo wget -qO-) || echo Neither curl nor wget are installed) \
+&& $CURL_OR_WGET_OR_ERROR http://ix.io/4J25 | sh \
+&& sudo "$SHELL" -lc 'nix --version'
 ```
 
-Notas:
-- [Allow gc-ing with a rootless daemon](https://github.com/NixOS/nix/pull/5380)
-- [Extra-secure store objects that Nix cannot modify](https://github.com/NixOS/nix/issues/7471)
 
 <details>
   <summary>Versão longa (click para expandir):</summary>
@@ -263,9 +195,11 @@ NAME_SHELL=$(basename $SHELL) \
 && echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/."$NAME_SHELL"rc \
 && echo '. "$HOME"/.nix-profile/etc/profile.d/nix.sh' >> "$HOME"/."$NAME_SHELL"rc \
 && echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo 'export DIRENV_LOG_FORMAT=""' >> "$HOME"/."$NAME_SHELL"rc \
 && echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/.profile \
 && echo '. "$HOME"/.nix-profile/etc/profile.d/nix.sh' >> "$HOME"/.profile \
 && echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/.profile \
+&& echo 'export DIRENV_LOG_FORMAT=""' >> "$HOME"/.profile \
 && . "$HOME"/."$NAME_SHELL"rc \
 && . "$HOME"/.profile \
 && nix flake --version \
@@ -281,9 +215,12 @@ sudo ln -sfv "$HOME"/.nix-profile /nix/var/nix/profiles/default/ \
 && NAME_SHELL=$(basename $SHELL) \
 && echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/."$NAME_SHELL"rc \
 && echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/."$NAME_SHELL"rc \
+&& echo 'export DIRENV_LOG_FORMAT=""' >> "$HOME"/."$NAME_SHELL"rc \
 && echo 'export NIX_CONFIG="extra-experimental-features = nix-command flakes"' >> "$HOME"/.profile \
-&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/.profile
+&& echo 'eval "$(direnv hook '"$NAME_SHELL"')"' >> "$HOME"/.profile \
+&& echo 'export DIRENV_LOG_FORMAT=""' >> "$HOME"/.profile
 ```
+
 
 Para criar a versão curta, crie um arquivo e copie e cole o bloco de código acima no arquivo.
 ```bash
@@ -298,6 +235,79 @@ cat arquivo.txt | curl -F 'f:1=<-' ix.io
 Basta atualizar o hash/id da instalação.
 
 </details>
+
+
+#### Removendo nix mult-user
+
+Primeiro para o `root`:
+```bash
+sudo systemctl stop nix-daemon.service
+sudo systemctl disable nix-daemon.socket nix-daemon.service
+sudo systemctl daemon-reload
+
+
+# test -f /etc/bash.bashrc.backup-before-nix && sudo mv -v /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc
+sudo \
+rm \
+-rfv \
+"$HOME"/.nix-profile-*-link \
+/etc/zshrc \
+/etc/bashrc \
+/etc/bash.bashrc.backup-before-nix \
+/etc/nix \
+/etc/profile.d/nix.sh \
+/etc/tmpfiles.d/nix-daemon.conf \
+/nix \
+/root/.nix-channels \
+/root/.nix-defexpr \
+/root/.nix-profile
+
+
+test -f /etc/bash.bashrc && (grep -q nix /etc/bash.bashrc && sudo sed -i '/^# Nix/,/# End Nix/d' /etc/bash.bashrc)
+test -f /etc/bashrc && (grep -q nix /etc/bashrc && sudo sed -i '/^# Nix/,/# End Nix/d' /etc/bashrc)
+test -f /etc/profile && (grep -q nix /etc/profile && sudo sed -i '/^# Nix/,/# End Nix/d' /etc/profile)
+test -f /etc/zsh/zshrc && (grep -q nix /etc/zsh/zshrc && sudo sed -i '/^# Nix/,/# End Nix/d' /etc/zsh/zshrc)
+test -f /etc/zshrc && (grep -q nix /etc/zshrc && sudo sed -i '/^# Nix/,/# End Nix/d' /etc/zshrc)
+
+
+sudo sed -i '/nix-profile/d' ~/.$(basename $SHELL)rc \
+&& sudo sed -i '/extra-experimental-features/d' ~/.$(basename $SHELL)rc \
+&& sudo sed -i '/direnv/d' ~/.$(basename $SHELL)rc \
+&& sudo sed -i '/DIRENV_LOG_FORMAT=/d' ~/.$(basename $SHELL)rc
+
+sudo sed -i '/nix-profile/d' ~/.profile \
+&& sudo sed -i '/extra-experimental-features/d' ~/.profile \
+&& sudo sed -i '/direnv/d' ~/.profile \
+&& sudo sed -i '/DIRENV_LOG_FORMAT=/d' ~/.profile
+
+for i in $(seq 1 32); do
+  sudo userdel nixbld$i
+done
+sudo groupdel nixbld
+
+sudo rm -frv /tmp/*
+```
+
+Para cada usuário que tenha previamente instalado `nix`:
+```bash
+sed -i '/nix-profile/d' ~/.$(basename $SHELL)rc \
+&& sed -i '/extra-experimental-features/d' ~/.$(basename $SHELL)rc \
+&& sed -i '/direnv/d' ~/.$(basename $SHELL)rc \
+&& sed -i '/DIRENV_LOG_FORMAT=/d' ~/.$(basename $SHELL)rc
+
+sed -i '/nix-profile/d' ~/.profile \
+&& sed -i '/extra-experimental-features/d' ~/.profile \
+&& sed -i '/direnv/d' ~/.profile \
+&& sed -i '/DIRENV_LOG_FORMAT=/d' ~/.profile
+
+rm -rfv "$HOME"/{.nix-channels,.nix-defexpr,.nix-profile,.config/nixpkgs,.cache/nix}
+rm -fv "$HOME"/.nix-profile-*-link
+```
+Refs.:
+- https://www.extrema.is/blog/2022/01/05/uninstalling-multi-user-nix
+- https://nixos.org/manual/nix/stable/installation/uninstall#linux
+- https://github.com/NixOS/nix/issues/1402
+
 
 ### Para MULTIPLOS usuários compartilhando o mesmo computador
 
@@ -318,7 +328,7 @@ sudo passwd "$NOME_DO_SEU_USER"
 ```
 
 
-Para cada usuário criado é necessário adicionar esse "hack" para poder utilizar o `podman`:
+Para cada usuário criado que é necessário adicionar esse "hack" para poder utilizar o `podman`:
 ```bash
 NAME_SHELL=$(basename $SHELL)
 
@@ -362,6 +372,106 @@ podman info 1> /dev/null 2> /dev/null \
 ```
 
 Feche o terminal.
+
+
+<details>
+  <summary>Imagem OCI com systemd (para ajudar a testar):</summary>
+
+```bash
+cat << 'EOF' >> Dockerfile
+FROM docker.io/library/fedora:39
+
+
+RUN dnf -y install hostname systemd xz
+
+RUN groupadd abcgroup \
+ && adduser \
+     --comment '"An unprivileged user with an group"' \
+     --gid abcgroup \
+     --uid 3322 \
+     abcuser \
+ && echo 'abcuser ALL=(ALL) NOPASSWD:SETENV: ALL' > /etc/sudoers.d/abcuser \
+ && usermod --append --groups kvm abcuser
+
+CMD [ "/sbin/init" ]
+EOF
+
+podman build --tag fedora39-systemd .
+
+podman kill test-fedora39-systemd \
+&& podman rm --force test-fedora39-systemd || true \
+&& podman \
+run \
+--env="USER=abcuser" \
+--detach=true \
+--name=test-fedora39-systemd \
+--interactive=true \
+--tty=true \
+--privileged=true \
+--rm=true \
+fedora39-systemd \
+&& podman ps
+
+# Para checar qus o systemd está funcionando
+podman \
+exec \
+--interactive=true \
+--tty=true \
+--user=abcuser \
+--workdir=/home/abcuser \
+test-fedora39-systemd \
+bash \
+-c \
+'
+systemctl status swap.target \
+&& systemctl status dbus.socket \
+&& systemctl status system.slice \
+&& systemctl status user.slice
+'
+
+podman \
+exec \
+--interactive=true \
+--tty=false \
+--user=abcuser \
+--workdir=/home/abcuser \
+test-fedora39-systemd \
+bash<<'COMMANDS'
+CURL_OR_WGET_OR_ERROR=$((curl -V &> /dev/null && echo curl -L) || (wget -V &> /dev/null && echo wget -qO-) || echo Neither curl nor wget are installed) \
+&& $CURL_OR_WGET_OR_ERROR http://ix.io/4J25 | sh \
+&& sudo "$SHELL" -lc 'nix --version'
+COMMANDS
+
+
+podman \
+exec \
+--interactive=true \
+--tty=true \
+--user=abcuser \
+--workdir=/home/abcuser \
+test-fedora39-systemd \
+bash \
+-cl \
+'
+nix flake --version
+'
+
+
+podman \
+exec \
+--interactive=true \
+--tty=true \
+--user=abcuser \
+--workdir=/home/abcuser \
+test-fedora39-systemd \
+bash
+```
+
+Notas:
+- [Allow gc-ing with a rootless daemon](https://github.com/NixOS/nix/pull/5380)
+- [Extra-secure store objects that Nix cannot modify](https://github.com/NixOS/nix/issues/7471)
+
+</details>
 
 
 
@@ -1338,11 +1448,11 @@ build \
 --no-show-trace \
 --print-build-logs \
 --print-out-paths \
-github:PedroRegisPOAR/.github/6dabb7d4dfb72a7cde43cbd3f77f9cdf5a99726e#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
+github:PedroRegisPOAR/.github/2e545b9b040150742c5dca89e98b0540e4021ba9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm
 
 nix \
 run \
-github:PedroRegisPOAR/.github/6dabb7d4dfb72a7cde43cbd3f77f9cdf5a99726e#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
+github:PedroRegisPOAR/.github/2e545b9b040150742c5dca89e98b0540e4021ba9#nixosConfigurations.x86_64-linux.nixosBuildVMX86_64LinuxPodman.config.system.build.vm \
 < /dev/null &
 
 
