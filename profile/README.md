@@ -408,21 +408,20 @@ EOF
 
 podman build --tag fedora39-systemd .
 
-podman kill test-fedora39-systemd \
+podman kill test-fedora39-systemd || true \
 && podman rm --force test-fedora39-systemd || true \
 && podman \
 run \
---env="USER=abcuser" \
 --detach=true \
 --name=test-fedora39-systemd \
---interactive=true \
+--interactive=false \
 --tty=true \
 --privileged=true \
 --rm=true \
-fedora39-systemd \
+localhost/fedora39-systemd \
 && podman ps
 
-# Para checar qus o systemd está funcionando
+# Para checar que o systemd está funcionando
 podman \
 exec \
 --interactive=true \
