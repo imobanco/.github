@@ -309,6 +309,16 @@ Refs.:
 - https://github.com/NixOS/nix/issues/1402
 
 
+> Note: se o nix foi instalado via algum gerenciador de pacotes, 
+> por exemplo, apt-get, será necessário fazer algo como:
+
+```bash
+# Note que esses comandos não removem o diretório /nix
+sudo apt-get purge -y nix-bin \
+&& sudo apt-get autoremove -y nix-bin
+```
+
+
 ### Para MULTIPLOS usuários compartilhando o mesmo computador
 
 O script abaixo cria um usuário com:
