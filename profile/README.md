@@ -496,9 +496,41 @@ curl -L http://ix.io/4vEW | sh
 
 Após abrir o terminal:
 ```bash
-nix registry pin github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b
+nix registry pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b \
+&& nix flake metadata nixpkgs
 ```
 
+
+<details>
+  <summary> Detalhes: nix registry {add,pin,remove} (click para expandir):</summary>
+
+```bash
+nix registry add nixpkgs github:NixOS/nixpkgs/nixos-22.11
+```
+Refs.:
+- https://nixos.org/manual/nix/unstable/command-ref/new-cli/nix3-registry-add#examples
+
+```bash
+nix registry pin nixpkgs github:NixOS/nixpkgs/ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b
+```
+Refs.:
+- https://discourse.nixos.org/t/how-to-pin-nix-registry-nixpkgs-to-release-channel/14883
+
+```bash
+nix registry remove nixpkgs
+```
+Refs.:
+- https://nixos.org/manual/nix/unstable/command-ref/new-cli/nix3-registry-remove#examples
+
+
+```bash
+nix registry list
+```
+
+```bash
+nix flake metadata nixpkgs
+```
+</details>
 
 Testando a instalação:
 ```bash
@@ -512,6 +544,18 @@ nix profile install nixpkgs#{curl,direnv,git,jq,wget}
 NIX_RELEASE_VERSION=2.10.2 \
 && curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s \
 && echo 'export NIX_CONFIG="extra-experimental-features = 'nix-command flakes'"' >> "$HOME"/.zprofile
+```
+
+```bash
+echo 'system-features = benchmark big-parallel kvm nixos-test' | tee /var/root/.config/nix/nix.conf \
+&& echo 'experimental-features = nix-command flakes' | tee /var/root/.config/nix/nix.conf \
+&& echo 'show-trace = true' | tee /var/root/.config/nix/nix.conf
+```
+
+```bash
+echo 'system-features = benchmark big-parallel kvm nixos-test' | sudo tee /var/root/.config/nix/nix.conf \
+&& echo 'experimental-features = nix-command flakes' | sudo tee /var/root/.config/nix/nix.conf \
+&& echo 'show-trace = true' | sudo tee /var/root/.config/nix/nix.conf
 ```
 
 Para criar a versão curta, crie um arquivo e copie e cole o bloco de código acima no arquivo.
