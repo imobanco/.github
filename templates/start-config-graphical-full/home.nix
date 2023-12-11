@@ -20,7 +20,7 @@
     jetbrains.pycharm-community
     keepassxc
     kolourpaint
-    libreoffice
+    # libreoffice # WPS? https://github.com/imobanco/.github/pull/1#discussion_r1175734524
     obsidian
     okular
     peek

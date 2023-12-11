@@ -186,7 +186,7 @@ DAEMON_OR_NO_DAEMON='--daemon'
 
 
 NIX_RELEASE_VERSION=2.10.2 \
-&& curl -L https://releases.nixos.org/nix/nix-"${NIX_RELEASE_VERSION}"/install | sh -s -- "$DAEMON_OR_NO_DAEMON"
+&& curl -L https://releases.nixos.org/nix/nix-2.18.1/install | sh -s -- --daemon
 
 sudo \
 $SHELL \
